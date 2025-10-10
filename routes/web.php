@@ -20,17 +20,11 @@
   */
 
   Route::get('/', function () {
-    return view('welcome');
-  });
-
-  Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('login');
   });
 
   Route::get('/login', [AuthController::class, 'index'])->name('login');
   Route::post('/login/action', [AuthController::class, 'actionLogin'])->name('login.action');
-  Route::get('/registrasi', [AuthController::class, 'registrasi'])->name('registrasi');
-  Route::post('/registrasi/action', [AuthController::class, 'actionRegistrasi'])->name('registrasi.action');
 
   Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -66,3 +60,7 @@
   Route::get('/', function () {
     return view('login');
   });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

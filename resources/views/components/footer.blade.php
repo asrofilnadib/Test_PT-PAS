@@ -26,8 +26,7 @@
         >
 
         <a href="https://pixinvent.ticksy.com/" target="_blank" class="footer-link d-none d-sm-inline-block"
-        >Support</a
-        >
+        >Support</a>
       </div>
     </div>
   </div>

@@ -41,7 +41,7 @@
   <ul class="menu-inner py-1">
     <!-- Dashboards -->
     <li class="menu-item active open">
-      <a href="javascript:void(0);" class="menu-link">
+      <a href="{{ route('dashboard') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-smart-home"></i>
         <div data-i18n="Dashboards">Dashboards</div>
         <div class="badge bg-primary rounded-pill ms-auto"></div>
@@ -52,16 +52,16 @@
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons ti ti-settings"></i>
-        <div data-i18n="Roles & Permissions">Roles & Permissions</div>
+        <div data-i18n="Barang Manajemen">Barang Manajemen</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
-          <a href="#" class="menu-link">
+          <a href="{{ route('barang') }}" class="menu-link">
             <div data-i18n="Kelola Barang">Kelola Barang</div>
           </a>
         </li>
         <li class="menu-item">
-          <a href="#" class="menu-link">
+          <a href="{{ route('transaksi_barang') }}" class="menu-link">
             <div data-i18n="Kelola Transaksi Barang">Kelola Transaksi Barang</div>
           </a>
         </li>
@@ -70,7 +70,7 @@
 
     {{-- users management --}}
     <li class="menu-item">
-      <a href="javascript:void(0);" class="menu-link">
+      <a href="{{ route('user') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-users"></i>
         <div data-i18n="Users">Users</div>
       </a>
