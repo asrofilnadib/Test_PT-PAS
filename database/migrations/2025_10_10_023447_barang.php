@@ -17,8 +17,8 @@ class Barang extends Migration
             $table->id();
             $table->string('nama_barang');
             $table->string('jenis_barang');
-            $table->foreignId('')->constrained('satuan');
-            $table->foreignId('user_id')->constrained('user');
+            $table->foreignId('id_satuan')->constrained('satuan');
+            $table->foreignId('user_id')->constrained('users');
             $table->smallInteger('stock');
             $table->timestamps();
             $table->date('expired_at');
