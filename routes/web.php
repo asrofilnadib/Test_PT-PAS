@@ -6,6 +6,7 @@
   use App\Http\Controllers\ReportController;
   use App\Http\Controllers\TransaksiBarangController;
   use App\Http\Controllers\UserController;
+  use Illuminate\Support\Facades\Auth;
   use Illuminate\Support\Facades\Route;
 
   /*
@@ -18,10 +19,6 @@
   | contains the "web" middleware group. Now create something great!
   |
   */
-
-  Route::get('/', function () {
-    return redirect()->route('login');
-  });
 
   Route::get('/login', [AuthController::class, 'index'])->name('login');
   Route::post('/login/action', [AuthController::class, 'actionLogin'])->name('login.action');
@@ -58,9 +55,9 @@
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
   Route::get('/', function () {
-    return view('login');
+    return redirect()->to('/login');
   });
 
-Auth::routes();
+  Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+  Route::get('/home', 'HomeController@index')->name('home');

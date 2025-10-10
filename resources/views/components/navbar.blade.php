@@ -75,4 +75,12 @@
         <div data-i18n="Users">Users</div>
       </a>
     </li>
+
+    {{-- Logout menu --}}
+    <li class="menu-item mt-3">
+      <a href="{{ route('logout') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-logout"></i>
+        <div data-i18n="Logout">Logout</div>
+      </a>
+    </li>
 </aside>

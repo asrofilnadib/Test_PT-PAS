@@ -71,15 +71,10 @@
 
     <!-- Layout container -->
     <div class="layout-page">
-
-      <!-- Navbar -->
-      <x-topbar></x-topbar>
-      <!-- / Navbar -->
-
       <!-- Content wrapper -->
       <div class="content-wrapper">
         <!-- Content -->
-        <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="container-xxl flex-grow-1 m-0">
           <div class="row">
             {{ $slot }}
           </div>

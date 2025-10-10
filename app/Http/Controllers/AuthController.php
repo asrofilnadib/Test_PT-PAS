@@ -5,9 +5,9 @@
   use App\Http\Controllers\Controller;
   use Illuminate\Foundation\Auth\AuthenticatesUsers;
   use Illuminate\Http\Request;
+  use Illuminate\Support\Facades\Auth;
   use Session;
   use App\Models\User;
-  use Auth;
 
   class AuthController extends Controller
   {
@@ -51,11 +51,11 @@
       $input = $request->all();
 
       $this->validate($request, [
-        'email' => 'required',
+        'username' => 'required',
         'password' => 'required',
       ]);
 
-      if(auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])))
+      if(auth()->attempt(array('name' => $input['username'], 'password' => $input['password'])))
       {
         if (auth()->user()->role === "admin") {
           return redirect()->route('dashboard');
@@ -64,14 +64,13 @@
         }
       }else{
         return redirect()->route('login')
-          ->with('error','Email And Password Are Wrong.');
+          ->with('error','Username atau password salah.');
       }
-
     }
 
     public function logout(){
       Auth::logout();
       Session::flush();
-      return redirect('/');
+      return redirect('/login');
     }
   }
