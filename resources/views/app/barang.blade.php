@@ -191,7 +191,7 @@
             text: "Data akan dihapus!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
+            confirmButtonColor: '#7367F0',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Ya, hapus!'
           }).then((result) => {
@@ -217,7 +217,7 @@
             success: function (response) {
               if (response.status === 'success') {
                 const data = response.data[0];
-                console.log(data)
+                // console.log(data)
 
                 // Isi field form dengan data API
                 form.find('input[name="nama_barang"]').val(data.nama_barang);

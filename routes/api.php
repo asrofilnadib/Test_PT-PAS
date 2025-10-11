@@ -2,6 +2,7 @@
 
   use App\Http\Controllers\API\APIBarangController;
   use App\Http\Controllers\API\APITransaksiBarangController;
+  use App\Http\Controllers\API\APIUserController;
   use App\Http\Controllers\BarangController;
   use Illuminate\Http\Request;
   use Illuminate\Support\Facades\Route;
@@ -30,5 +31,10 @@
     Route::prefix('transaksi')->group(function () {
       Route::get('/{id}', [APITransaksiBarangController::class, 'show'])
         ->name('api.detail.transaksi');
+    });
+
+    Route::prefix('user')->group(function () {
+      Route::get('/{id}', [APIUserController::class, 'show'])
+        ->name('api.detail.user');
     });
   });

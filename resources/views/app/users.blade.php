@@ -1,233 +1,273 @@
 <x-app-layout>
-  <x-slot name="header">
-
-  </x-slot>
+  <x-slot name="header"></x-slot>
+  @if(session()->has('success'))
+    <x-alert type="success" message="{{ session()->get('success') }}"></x-alert>
+  @elseif(session()->has('failed'))
+    <x-alert type="danger" message="{{ session()->get('failed') }}"></x-alert>
+  @elseif(session()->has('error'))
+    <x-alert type="danger" message="{{ session()->get('error') }}"></x-alert>
+  @endif
 
   <!-- Content -->
   <div class="container-xxl flex-grow-1 container-p-y">
+
+    <!-- Greeting Card -->
     <div class="row g-4 mb-4">
-      <div class="col-sm-6 col-xl-3">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-start justify-content-between">
-              <div class="content-left">
-                <span>Session</span>
-                <div class="d-flex align-items-center my-2">
-                  <h3 class="mb-0 me-2">21,459</h3>
-                  <p class="text-success mb-0">(+29%)</p>
-                </div>
-                <p class="mb-0">Total Users</p>
-              </div>
-              <div class="avatar">
-                          <span class="avatar-initial rounded bg-label-primary">
-                            <i class="ti ti-user ti-sm"></i>
-                          </span>
-              </div>
+      <div class="col-sm-6 col-xl-6">
+        <div class="card shadow-sm border-0">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <h4 class="mb-0">Hello, {{ Auth::user()->name }}</h4>
+              <small class="text-muted">Welcome back 👋</small>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-xl-3">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-start justify-content-between">
-              <div class="content-left">
-                <span>Paid Users</span>
-                <div class="d-flex align-items-center my-2">
-                  <h3 class="mb-0 me-2">4,567</h3>
-                  <p class="text-success mb-0">(+18%)</p>
-                </div>
-                <p class="mb-0">Last week analytics</p>
-              </div>
-              <div class="avatar">
-                          <span class="avatar-initial rounded bg-label-danger">
-                            <i class="ti ti-user-plus ti-sm"></i>
-                          </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-xl-3">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-start justify-content-between">
-              <div class="content-left">
-                <span>Active Users</span>
-                <div class="d-flex align-items-center my-2">
-                  <h3 class="mb-0 me-2">19,860</h3>
-                  <p class="text-danger mb-0">(-14%)</p>
-                </div>
-                <p class="mb-0">Last week analytics</p>
-              </div>
-              <div class="avatar">
-                          <span class="avatar-initial rounded bg-label-success">
-                            <i class="ti ti-user-check ti-sm"></i>
-                          </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-xl-3">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex align-items-start justify-content-between">
-              <div class="content-left">
-                <span>Pending Users</span>
-                <div class="d-flex align-items-center my-2">
-                  <h3 class="mb-0 me-2">237</h3>
-                  <p class="text-success mb-0">(+42%)</p>
-                </div>
-                <p class="mb-0">Last week analytics</p>
-              </div>
-              <div class="avatar">
-                          <span class="avatar-initial rounded bg-label-warning">
-                            <i class="ti ti-user-exclamation ti-sm"></i>
-                          </span>
-              </div>
+            <div class="avatar">
+              <span class="avatar-initial rounded bg-label-primary">
+                <i class="ti ti-user ti-sm"></i>
+              </span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- Users List Table -->
-    <div class="card">
-      <div class="card-header border-bottom">
-        <h5 class="card-title mb-3">Search Filter</h5>
-        <div class="d-flex justify-content-between align-items-center row pb-2 gap-3 gap-md-0">
-          <div class="col-md-4 user_role"></div>
-          <div class="col-md-4 user_plan"></div>
-          <div class="col-md-4 user_status"></div>
+
+    <!-- User Table Section -->
+    <section id="user-content">
+      <div class="container-fluid px-0">
+        <div class="card shadow-sm border-0">
+          <div class="card-body pb-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+              <h3 class="mb-0">Data User</h3>
+              <button type="button" class="btn btn-primary" data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvasAddUser">
+                <i class="ti ti-plus"></i> Tambah User
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body pt-0">
+            <table id="userTable" class="table table-striped table-bordered w-100">
+              <thead class="table-light">
+              <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              @foreach($users as $index => $user)
+                <tr>
+                  <td>{{ $index + 1 }}</td>
+                  <td>{{ $user->name }}</td>
+                  <td>{{ $user->email }}</td>
+                  <td>{{ $user->roles->pluck('name')->join(', ') }}</td>
+                  <td>
+                    @if($user->status === 'active')
+                      <span class="badge bg-success">Active</span>
+                    @else
+                      <span class="badge bg-secondary">Inactive</span>
+                    @endif
+                  </td>
+                  <td>{{ $user->created_at->format('d M Y') }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-warning edit" data-bs-toggle="modal" data-bs-target="#editModal"
+                            data-id="{{ $user->id }}">
+                      <i class="ti ti-edit"></i>
+                    </button>
+                    <a href="{{ route('user.destroy', $user->id) }}" class="btn btn-sm btn-danger hapus">
+                      <i class="ti ti-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+              @endforeach
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div class="card-datatable table-responsive">
-        <table class="datatables-users table">
-          <thead class="border-top">
-          <tr>
-            <th></th>
-            <th>User</th>
-            <th>Role</th>
-            <th>Plan</th>
-            <th>Billing</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-          </thead>
-        </table>
+    </section>
+
+    <!-- Offcanvas Add User -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddUser" aria-labelledby="offcanvasAddUserLabel">
+      <div class="offcanvas-header">
+        <h5 id="offcanvasAddUserLabel" class="offcanvas-title">Tambah User</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
-      <!-- Offcanvas to add new user -->
-      <div
-        class="offcanvas offcanvas-end"
-        tabindex="-1"
-        id="offcanvasAddUser"
-        aria-labelledby="offcanvasAddUserLabel">
-        <div class="offcanvas-header">
-          <h5 id="offcanvasAddUserLabel" class="offcanvas-title">Add User</h5>
-          <button
-            type="button"
-            class="btn-close text-reset"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
-          <form class="add-new-user pt-0" id="addNewUserForm" onsubmit="return false">
-            <div class="mb-3">
-              <label class="form-label" for="add-user-fullname">Full Name</label>
-              <input
-                type="text"
-                class="form-control"
-                id="add-user-fullname"
-                placeholder="John Doe"
-                name="userFullname"
-                aria-label="John Doe"/>
-            </div>
-            <div class="mb-3">
-              <label class="form-label" for="add-user-email">Email</label>
-              <input
-                type="text"
-                id="add-user-email"
-                class="form-control"
-                placeholder="john.doe@example.com"
-                aria-label="john.doe@example.com"
-                name="userEmail"/>
-            </div>
-            <div class="mb-3">
-              <label class="form-label" for="add-user-contact">Contact</label>
-              <input
-                type="text"
-                id="add-user-contact"
-                class="form-control phone-mask"
-                placeholder="+1 (609) 988-44-11"
-                aria-label="john.doe@example.com"
-                name="userContact"/>
-            </div>
-            <div class="mb-3">
-              <label class="form-label" for="add-user-company">Company</label>
-              <input
-                type="text"
-                id="add-user-company"
-                class="form-control"
-                placeholder="Web Developer"
-                aria-label="jdoe1"
-                name="companyName"/>
-            </div>
-            <div class="mb-3">
-              <label class="form-label" for="country">Country</label>
-              <select id="country" class="select2 form-select">
-                <option value="">Select</option>
-                <option value="Australia">Australia</option>
-                <option value="Bangladesh">Bangladesh</option>
-                <option value="Belarus">Belarus</option>
-                <option value="Brazil">Brazil</option>
-                <option value="Canada">Canada</option>
-                <option value="China">China</option>
-                <option value="France">France</option>
-                <option value="Germany">Germany</option>
-                <option value="India">India</option>
-                <option value="Indonesia">Indonesia</option>
-                <option value="Israel">Israel</option>
-                <option value="Italy">Italy</option>
-                <option value="Japan">Japan</option>
-                <option value="Korea">Korea, Republic of</option>
-                <option value="Mexico">Mexico</option>
-                <option value="Philippines">Philippines</option>
-                <option value="Russia">Russian Federation</option>
-                <option value="South Africa">South Africa</option>
-                <option value="Thailand">Thailand</option>
-                <option value="Turkey">Turkey</option>
-                <option value="Ukraine">Ukraine</option>
-                <option value="United Arab Emirates">United Arab Emirates</option>
-                <option value="United Kingdom">United Kingdom</option>
-                <option value="United States">United States</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label class="form-label" for="user-role">User Role</label>
-              <select id="user-role" class="form-select">
-                <option value="subscriber">Subscriber</option>
-                <option value="editor">Editor</option>
-                <option value="maintainer">Maintainer</option>
-                <option value="author">Author</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <div class="mb-4">
-              <label class="form-label" for="user-plan">Select Plan</label>
-              <select id="user-plan" class="form-select">
-                <option value="basic">Basic</option>
-                <option value="enterprise">Enterprise</option>
-                <option value="company">Company</option>
-                <option value="team">Team</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Submit</button>
-            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Cancel</button>
-          </form>
-        </div>
+      <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
+        <form action="{{ route('user.add') }}" method="POST">
+          @csrf
+          <div class="mb-3">
+            <label class="form-label">Nama</label>
+            <input type="text" name="name" class="form-control" placeholder="Masukkan nama user" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" placeholder="Masukkan email" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Alamat</label>
+            <textarea name="alamat" rows="2" class="form-control" placeholder="Masukan alamat"
+                      required></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">No.Telp</label>
+            <input type="number" name="no_telp" class="form-control" placeholder="Masukkan Nomor Telepon"
+                   required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Role</label>
+            <select name="role" class="form-select" required>
+              <option value="" selected disabled hidden>-- Pilih Role --</option>
+              @foreach($roles as $role)
+                <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Masukkan password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Simpan</button>
+        </form>
       </div>
     </div>
   </div>
-  <!-- / Content -->
 
+  {{-- Modal Edit Data --}}
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form action="{{ route('user.update') }}" method="POST" id="formEditUser">
+          @csrf
+          <input type="hidden" id="id_user" name="id">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Edit User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Nama</label>
+              <input type="text" name="name" class="form-control" placeholder="Masukkan nama user" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" placeholder="Masukkan email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Alamat</label>
+              <textarea name="alamat" id="alamat" rows="2" class="form-control" placeholder="Masukan alamat"
+                        required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">No.Telp</label>
+              <input type="number" name="no_telp" class="form-control" step="1" placeholder="Masukkan Nomor Telepon" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Role</label>
+              <select name="role" class="form-select" required>
+                <option value="" selected disabled hidden>-- Pilih Role --</option>
+                @foreach($roles as $role)
+                  <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" placeholder="Masukkan password">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <x-slot name="script">
+    <script>
+      $(document).ready(function () {
+        $('#userTable').DataTable({
+          responsive: true,
+          language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Cari user...",
+            lengthMenu: "Tampilkan _MENU_ data",
+            zeroRecords: "Tidak ditemukan data yang sesuai",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            infoEmpty: "Tidak ada data tersedia"
+          }
+        });
+
+        // delete confirmation
+        $('.hapus').on('click', function (e) {
+          e.preventDefault();
+          const href = $(this).attr('href');
+          Swal.fire({
+            title: 'Apakah anda yakin?',
+            text: "Data akan dihapus permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#7367F0',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              document.location.href = href;
+            }
+          });
+        });
+
+        $(document).on('click', '.edit', function () {
+          const id = $(this).data('id');
+          const modal = $('#editModal');
+          const form = $('#formEditUser')
+
+          form.trigger('reset');
+
+          $.ajax({
+            url: `api/v1/user/${id}`,
+            type: 'GET',
+            dataType: 'json',
+            beforeSend: function () {
+              modal.find('.modal-body').css('opacity', '0.6');
+            },
+            success: function (response) {
+              if (response.status === 'success') {
+                const data = response.data;
+                console.log(data)
+                // Isi field form dengan data API
+                form.find('input[name="name"]').val(data.name);
+                form.find('input[name="email"]').val(data.email);
+                form.find('textarea[name="alamat"]').val(data.alamat);
+                form.find('input[name="no_telp"]').val(data.no_telp);
+                form.find('select[name="role"]').val(data.roles[0].id || '').trigger('change');
+                form.find('input[name="password"]').val('');
+
+                // Simpan ID barang ke form (hidden input biar bisa dikirim saat submit)
+                if (form.find('input[name="id"]').length === 0) {
+                  form.append(`<input type="hidden" name="id" value="${data.id}">`);
+                } else {
+                  form.find('input[name="id"]').val(data.id);
+                }
+
+                // Reset style modal
+                modal.find('.modal-body').css('opacity', '1');
+                modal.modal('show');
+              } else {
+                Swal.fire('Error', 'Item not found.', 'error');
+              }
+            },
+            error: function (xhr, status, error) {
+
+            },
+          })
+        })
+      });
+    </script>
+  </x-slot>
 </x-app-layout>

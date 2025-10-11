@@ -8,6 +8,7 @@
         <script>
           document.write(new Date().getFullYear());
         </script>
+        by Asrofil Nadib
       </div>
     </div>
   </div>

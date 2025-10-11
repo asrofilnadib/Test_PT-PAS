@@ -49,7 +49,7 @@
   Route::post('/user/filter', [UserController::class, 'filter'])->name('user.filter');
   Route::post('/user/detail', [UserController::class, 'detail'])->name('user.detail');
   Route::post('/user/store', [UserController::class, 'store'])->name('user.add');
-  Route::post('/user/update/{id}', [UserController::class, 'update'])->name('user.update');
+  Route::post('/user/update', [UserController::class, 'update'])->name('user.update');
   Route::get('/user/{id}/destroy', [UserController::class, 'destroy'])->name('user.destroy');
 
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

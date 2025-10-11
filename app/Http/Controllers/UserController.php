@@ -6,6 +6,8 @@
   use Illuminate\Http\Request;
   use App\Models\User;
   use App\Models\Satuan;
+  use Illuminate\Support\Facades\Hash;
+  use Spatie\Permission\Models\Role;
 
   class UserController extends Controller
   {
@@ -14,8 +16,9 @@
      */
     public function index()
     {
-      $user = User::all();
-      return view('app.users', compact('user'));
+      $users = User::all();
+      $roles = Role::all();
+      return view('app.users', compact('users', 'roles'));
     }
 
     /**
@@ -29,14 +32,34 @@
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
-      $data = new User();
-      $this->extracted($request, $data);
-      $data->password = bcrypt($request->password);
-      $data->role = $request->role;
-      $data->save();
-      return redirect()->route('user')->with('success', "Data User Berhasil Ditambahkan !");
+      try {
+        $request->validate([
+          'name' => 'required|string|max:255',
+          'email' => 'required|email|unique:users,email',
+          'alamat' => 'nullable|string|max:255',
+          'no_telp' => 'nullable|string|max:20',
+          'role' => 'required|exists:roles,id',
+          'password' => 'required|string|min:6',
+        ]);
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->alamat = $request->alamat;
+        $user->no_telp = $request->no_telp;
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        $role = Role::findById($request->role);
+        $user->assignRole($role);
+
+        return redirect()->back()->with('success', 'Data User Berhasil Ditambahkan!');
+      } catch (\Throwable $err) {
+        return redirect()->back()->with('error', 'Data User Gagal Ditambahkan!');
+      }
     }
 
     public function detail(Request $request)
@@ -69,16 +92,27 @@
      */
     public function update(Request $request)
     {
-      $data = User::find($request)->first();
-//    dd($data);
-      $this->extracted($request, $data);
-      if (isset($request->password)) {
-        $data->password = bcrypt($request->password);
+      try {
+        $user = User::find($request->id);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->alamat = $request->alamat;
+        $user->no_telp = $request->no_telp;
+
+        if (!empty($request->password)) {
+          $user->password = bcrypt($request->password);
+        }
+
+        $user->updated_at = now('Asia/Jakarta');
+        $user->save();
+
+        if ($request->has('role')) $user->syncRoles([$request->role]);
+
+        return redirect()->back()->with('success', 'Data User Berhasil Diupdate!');
+      } catch (\Throwable $err) {
+        return redirect()->back()->with('error', 'Data User Gagal Diupdate!');
       }
-      $data->role = $request->role;
-      $data->updated_at = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
-      $data->save();
-      return redirect()->route('user')->with('success', "Data User Berhasil Diupdate !");
     }
 
     /**
@@ -90,28 +124,9 @@
         $user = User::findOrFail($id);
         // unlink("file/user/" . $user->foto);
         $user->delete();
-        return redirect()->route('user')->with('success', "Data user Berhasil Di Hapus !");
+        return redirect()->back()->with('success', "Data user Berhasil Di Hapus !");
       } catch (\Throwable $e) {
-        return redirect()->route('user')->with('error', $e);
+        return redirect()->back()->with('error', $e);
       }
-    }
-
-    /**
-     * @param Request $request
-     * @param $data
-     * @return void
-     */
-    public function extracted(Request $request, $data): void
-    {
-      $data->name = $request->name;
-      $data->alamat = $request->alamat;
-      if ($file = $request->file('foto')) {
-        $nama_file = md5_file($file->getRealPath()) . "_" . $file->getClientOriginalName();
-        $path = 'file/user';
-        $file->move($path, $nama_file);
-        $data->foto = $nama_file;
-      }
-      $data->no_telp = $request->no_telp;
-      $data->email = $request->email;
     }
   }

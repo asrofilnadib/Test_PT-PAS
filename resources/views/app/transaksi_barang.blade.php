@@ -12,7 +12,7 @@
       <div>
         <h4 class="fw-bold py-3 mb-0">Transaksi Barang</h4>
       </div>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
         <i class="ti ti-plus me-1"></i> Tambah Data Transaksi
       </button>
     </div>
@@ -61,13 +61,13 @@
   </div>
 
   {{-- Modal Tambah Data Transaksi --}}
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <form action="{{ route('transaksi_barang.add') }}" method="POST">
           @csrf
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Tambah Transaksi Barang</h5>
+            <h5 class="modal-title" id="addModalLabel">Tambah Transaksi Barang</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -215,7 +215,7 @@
             },
             success: function (response) {
               if (response.status === 'success') {
-                const data = response.data;
+                const data = response.data[0];
 
                 // Fill in form fields with API response
                 form.find('select[name="jenis"]').val(data.jenis).trigger('change'); // Select option for transaction type
