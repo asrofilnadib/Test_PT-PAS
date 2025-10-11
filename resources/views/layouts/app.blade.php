@@ -57,6 +57,9 @@
   <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
   <script src="../../assets/js/config.js"></script>
 
+  {{-- Selectize --}}
+  <link rel="stylesheet" href="{{ asset('css/selectize/selectize.default.css') }}"></link>
+
   @yield('style')
 </head>
 
@@ -78,50 +81,52 @@
           <div class="row">
             {{ $slot }}
           </div>
-        <!-- / Content -->
+          <!-- / Content -->
 
-        <x-footer></x-footer>
+          <x-footer></x-footer>
 
-        <div class="content-backdrop fade"></div>
+          <div class="content-backdrop fade"></div>
+        </div>
+        <!-- Content wrapper -->
       </div>
-      <!-- Content wrapper -->
+      <!-- / Layout page -->
     </div>
-    <!-- / Layout page -->
+
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+
+    <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+    <div class="drag-target"></div>
   </div>
+  <!-- / Layout wrapper -->
 
-  <!-- Overlay -->
-  <div class="layout-overlay layout-menu-toggle"></div>
+  <!-- Core JS -->
+  <!-- build:js assets/vendor/js/core.js -->
+  <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
+  <script src="../../assets/vendor/libs/popper/popper.js"></script>
+  <script src="../../assets/vendor/js/bootstrap.js"></script>
+  <script src="../../assets/vendor/libs/node-waves/node-waves.js"></script>
+  <script src="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+  <script src="../../assets/vendor/libs/hammer/hammer.js"></script>
+  <script src="../../assets/vendor/libs/i18n/i18n.js"></script>
+  <script src="../../assets/vendor/libs/typeahead-js/typeahead.js"></script>
+  <script src="../../assets/vendor/js/menu.js"></script>
 
-  <!-- Drag Target Area To SlideIn Menu On Small Screens -->
-  <div class="drag-target"></div>
-</div>
-<!-- / Layout wrapper -->
+  <!-- endbuild -->
 
-<!-- Core JS -->
-<!-- build:js assets/vendor/js/core.js -->
+  <!-- Vendors JS -->
+  <script src="../../assets/vendor/libs/apex-charts/apexcharts.js"></script>
+  <script src="../../assets/vendor/libs/swiper/swiper.js"></script>
+  <script src="../../assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
 
-<script src="../../assets/vendor/libs/jquery/jquery.js"></script>
-<script src="../../assets/vendor/libs/popper/popper.js"></script>
-<script src="../../assets/vendor/js/bootstrap.js"></script>
-<script src="../../assets/vendor/libs/node-waves/node-waves.js"></script>
-<script src="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-<script src="../../assets/vendor/libs/hammer/hammer.js"></script>
-<script src="../../assets/vendor/libs/i18n/i18n.js"></script>
-<script src="../../assets/vendor/libs/typeahead-js/typeahead.js"></script>
-<script src="../../assets/vendor/js/menu.js"></script>
+  <!-- Main JS -->
+  <script src="../../assets/js/main.js"></script>
 
-<!-- endbuild -->
+  <!-- Page JS -->
+  <script src="../../assets/js/dashboards-analytics.js"></script>
 
-<!-- Vendors JS -->
-<script src="../../assets/vendor/libs/apex-charts/apexcharts.js"></script>
-<script src="../../assets/vendor/libs/swiper/swiper.js"></script>
-<script src="../../assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
-
-<!-- Main JS -->
-<script src="../../assets/js/main.js"></script>
-
-<!-- Page JS -->
-<script src="../../assets/js/dashboards-analytics.js"></script>
+  {{-- Selectize JS --}}
+  <script src="{{ asset('js/selectize/selectize.js') }}"></script>
 
 {{ ($script) ?? '' }}
 

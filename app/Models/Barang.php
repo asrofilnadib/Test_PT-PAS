@@ -32,4 +32,24 @@ class Barang extends Model
     $now = Carbon::now();
     return $this->attributes['expired_at'] < $now ? 0 : 1;
   }
+
+  public function getDetailBarang($id)
+  {
+    $barang = Barang::find($id)
+      ->select('barang.*')
+      ->selectRaw('
+            barang.stock +
+            (
+                COALESCE(SUM(CASE WHEN transaksi_barang.jenis = "Masuk" THEN transaksi_barang.qty ELSE 0 END), 0)
+                -
+                COALESCE(SUM(CASE WHEN transaksi_barang.jenis = "Keluar" THEN transaksi_barang.qty ELSE 0 END), 0)
+            ) AS stock_aktual
+        ')
+      ->leftJoin('transaksi_barang', 'barang.id', '=', 'transaksi_barang.id_barang')
+      ->groupBy('barang.id')
+      ->with('satuan')
+      ->get();
+
+    return json_decode(json_encode($barang), true);
+  }
 }

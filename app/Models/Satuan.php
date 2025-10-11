@@ -8,5 +8,4 @@ class Satuan extends Model
 {
     protected $table = 'satuan';
     protected $guarded = ['id'];
-
 }

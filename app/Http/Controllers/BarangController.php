@@ -16,8 +16,22 @@
      */
     public function index()
     {
-      $barang = Barang::all();
+      $barang = Barang::select('barang.*')
+        ->selectRaw('
+            barang.stock +
+            (
+                COALESCE(SUM(CASE WHEN transaksi_barang.jenis = "Masuk" THEN transaksi_barang.qty ELSE 0 END), 0)
+                -
+                COALESCE(SUM(CASE WHEN transaksi_barang.jenis = "Keluar" THEN transaksi_barang.qty ELSE 0 END), 0)
+            ) AS stock_aktual
+        ')
+        ->leftJoin('transaksi_barang', 'barang.id', '=', 'transaksi_barang.id_barang')
+        ->groupBy('barang.id')
+        ->with('satuan')
+        ->get();
+
       $satuan = Satuan::all();
+//      dd($barang);
       return view('app.barang',compact('barang','satuan'));
     }
 
@@ -34,29 +48,30 @@
      */
     public function store(Request $request)
     {
-      $data = new Barang();
-      $data->user_id = Auth::user()->id;
-      $data->nama_barang = $request->nama_barang;
-      $data->jenis_barang = $request->jenis_barang;
-      if($file = $request->file('foto')){
-
-        $nama_file = md5_file($file->getRealPath()) ."_".$file->getClientOriginalName();
-        $path = 'file/barang';
-        $file->move($path,$nama_file);
-        $data->foto = $nama_file;
+      try {
+        $data = new Barang();
+        $data->user_id = Auth::user()->id;
+        $data->nama_barang = $request->nama_barang;
+        $data->jenis_barang = $request->jenis_barang;
+        if($file = $request->file('foto')){
+          $nama_file = md5_file($file->getRealPath()) ."_".$file->getClientOriginalName();
+          $path = 'file/barang';
+          $file->move($path,$nama_file);
+          $data->foto = $nama_file;
+        }
+        $data->stock = $request->stock;
+        $data->id_satuan = $request->id_satuan;
+        $data->expired_at = $request->expired_at;
+        $data->save();
+        return redirect()->back()->with('success', "Data Barang Berhasil Ditambahkan !");
+      } catch (\Throwable $ere) {
+        return redirect()->back()->with('error', "Terjadi Kesalahan Saat Menambahkan Data.");
       }
-      $data->stock = $request->stock;
-      $data->id_satuan = $request->id_satuan;
-      $data->expired_at = $request->expired_at;
-      $data->save();
-      return redirect()->route('barang')->with('success', "Data Barang Berhasil Ditambahkan !");
     }
 
-    public function detail(Request $request){
-      $data = Barang::where('id',$request->id)->with('satuan')->first();
-      return response()->json([
-        'data' => $data,
-      ]);
+    public function detail(Request $request)
+    {
+      //
     }
 
 
@@ -82,23 +97,30 @@
      */
     public function update(Request $request)
     {
-      $data = Barang::find($request)->first();
-//        dd($request);
-      $data->user_id = Auth::user()->id;
-      $data->nama_barang = $request->nama_barang;
-      $data->jenis_barang = $request->jenis_barang;
-      if($file = $request->file('foto')){
-        $nama_file = md5_file($file->getRealPath()) ."_".$file->getClientOriginalName();
-        $path = 'file/barang';
-        $file->move($path,$nama_file);
-        $data->foto = $nama_file;
+      try {
+        $data = Barang::where('id', $request->id)->firstOrFail();
+        $data->user_id = Auth::user()->id;
+        $data->nama_barang = $request->nama_barang;
+        $data->jenis_barang = $request->jenis_barang;
+
+        // Handle file upload if exists
+        if ($file = $request->file('foto')) {
+          $nama_file = md5_file($file->getRealPath()) . "_" . $file->getClientOriginalName();
+          $path = 'file/barang';
+          $file->move($path, $nama_file);
+          $data->foto = $nama_file;
+        }
+
+        $data->stock = $request->stock;
+        $data->id_satuan = $request->id_satuan;
+        $data->expired_at = $request->expired_at;
+        $data->updated_at = Carbon::now('Asia/Jakarta');
+        $data->save();
+
+        return redirect()->back()->with('success', 'Data barang berhasil diperbarui!');
+      } catch (\Throwable $e) {
+        return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.');
       }
-      $data->stock = $request->stock;
-      $data->id_satuan = $request->id_satuan;
-      $data->expired_at = $request->expired_at;
-      $data->updated_at = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
-      $data->save();
-      return redirect()->route('barang')->with('success', "Data Barang Berhasil Diupdate !");
     }
 
     /**
@@ -106,13 +128,18 @@
      */
     public function destroy($id)
     {
-      try{
+      try {
         $barang = Barang::findOrFail($id);
-        // unlink("file/barang/" . $barang->foto);
+
+         /*// delete file if exists
+         if ($barang->foto && file_exists("file/barang/{$barang->foto}")) {
+             unlink("file/barang/{$barang->foto}");
+         }*/
+
         $barang->delete();
-        return redirect()->route('barang')->with('success', "Data barang Berhasil Di Hapus !");
-      }catch(\Throwable $e){
-        return redirect()->route('barang')->with('error', $e);
+        return redirect()->back()->with('success', 'Data barang berhasil dihapus!');
+      } catch (\Throwable $e) {
+        return redirect()->back()->with('error', 'Gagal menghapus data barang.');
       }
     }
   }

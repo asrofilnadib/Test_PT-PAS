@@ -18,8 +18,7 @@
   justify-content: center;
   display: -ms-flexbox;
   display: flex;
-  width: 34px;
-  height: 24px;
+  width: 5rem;
 }
 
 .app-brand-logo.demo svg {

@@ -17,7 +17,7 @@
     {
       $transaksi_barang = TransaksiBarang::with('barang')->get();
       $barang = Barang::all();
-      return view('transaksi_barang.index',compact('transaksi_barang','barang'));
+      return view('app.transaksi_barang',compact('transaksi_barang','barang'));
     }
 
     /**
@@ -33,29 +33,34 @@
      */
     public function store(Request $request)
     {
-      if($request->jenis === "Keluar"){
-        $barang = Barang::find($request->id_barang);
-        $jumlah = $barang->stock - $request->qty;
-        if($jumlah < 0 ){
-          return redirect()->route('transaksi_barang')->with('error', "Stock Barang Tidak Mencukupi !");
+      try {
+        if($request->jenis === "Keluar"){
+          $barang = Barang::find($request->id_barang);
+          $jumlah = $barang->stock - $request->qty;
+          if($jumlah < 0 ){
+            return redirect()->route('transaksi_barang')->with('error', "Stock Barang Tidak Mencukupi !");
+          }
         }
-      }
 
-      $data = new TransaksiBarang();
-      $data->user_id = Auth::user()->id;
-      $data->id_barang = $request->id_barang;
-      $data->jenis = $request->jenis;
-      $data->qty = $request->qty;
-      if($file = $request->file('foto')){
+        $data = new TransaksiBarang();
+        $data->user_id = Auth::user()->id;
+        $data->id_barang = $request->id_barang;
+        $data->jenis = $request->jenis;
+        $data->qty = $request->qty;
 
-        $nama_file = md5_file($file->getRealPath()) ."_".$file->getClientOriginalName();
-        $path = 'file/transaksi_barang';
-        $file->move($path,$nama_file);
-        $data->foto = $nama_file;
+        if($file = $request->file('foto')){
+
+          $nama_file = md5_file($file->getRealPath()) ."_".$file->getClientOriginalName();
+          $path = 'file/transaksi_barang';
+          $file->move($path,$nama_file);
+          $data->foto = $nama_file;
+        }
+        $data->tanggal_transaksi = Carbon::parse($request->transaksi_barang)->toDateTimeString();
+        $data->save();
+        return redirect()->back()->with('success', "Data TransaksiBarang Berhasil Ditambahkan !");
+      } catch (\Throwable $err) {
+        return redirect()->back()->with('error', $err->getMessage());
       }
-      $data->tanggal_transaksi = Carbon::parse($request->transaksi_barang)->toDateTimeString();
-      $data->save();
-      return redirect()->route('transaksi_barang')->with('success', "Data TransaksiBarang Berhasil Ditambahkan !");
     }
 
     public function detail(Request $request){
@@ -88,22 +93,26 @@
      */
     public function update(Request $request)
     {
-      $data = TransaksiBarang::find($request)->first();
+      try {
+        $data = TransaksiBarang::where('id', $request->id)->firstOrFail();
 //        dd($data);
-      $data->user_id = Auth::user()->id;
-      $data->id_barang = $request->id_barang;
-      $data->jenis = $request->jenis;
-      $data->qty = $request->qty;
-      if($file = $request->file('foto')){
-        $nama_file = md5_file($file->getRealPath()) ."_".$file->getClientOriginalName();
-        $path = 'file/transaksi_barang';
-        $file->move($path,$nama_file);
-        $data->foto = $nama_file;
+        $data->user_id = Auth::user()->id;
+        $data->id_barang = $request->id_barang;
+        $data->jenis = $request->jenis;
+        $data->qty = $request->qty;
+        if($file = $request->file('foto')){
+          $nama_file = md5_file($file->getRealPath()) ."_".$file->getClientOriginalName();
+          $path = 'file/transaksi_barang';
+          $file->move($path,$nama_file);
+          $data->foto = $nama_file;
+        }
+        $data->tanggal_transaksi = Carbon::parse($request->tanggal_transaksi)->toDateTimeString();
+        $data->updated_at = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
+        $data->save();
+        return redirect()->back()->with('success', "Data Transaksi Barang Berhasil Diupdate !");
+      } catch (\Throwable $err) {
+        return redirect()->back()->with('error', $err->getMessage());
       }
-      $data->tanggal_transaksi = Carbon::parse($request->tanggal_transaksi)->toDateTimeString();
-      $data->updated_at = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
-      $data->save();
-      return redirect()->route('transaksi_barang')->with('success', "Data TransaksiBarang Berhasil Diupdate !");
     }
 
     /**
@@ -115,9 +124,9 @@
         $transaksi_barang = TransaksiBarang::findOrFail($id);
         unlink("file/transaksi_barang/" . $transaksi_barang->foto);
         $transaksi_barang->delete();
-        return redirect()->route('transaksi_barang')->with('success', "Data transaksi_barang Berhasil Di Hapus !");
+        return redirect()->back()->with('success', "Data transaksi_barang Berhasil Di Hapus !");
       }catch(\Exception $e){
-        return redirect()->route('transaksi_barang')->with('error', $e->getMessage());
+        return redirect()->back()->with('error', $e->getMessage());
       }
     }
   }
