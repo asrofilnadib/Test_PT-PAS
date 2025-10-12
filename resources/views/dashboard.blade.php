@@ -130,7 +130,7 @@
     <!--/ Barang Table -->
 
     <!-- Chart In Out Barang -->
-    <div class="col-xl-4 col-md-6 mb-4">
+    <div class="col-xl-4 col-md-6 mb-4" style="width: 405px; height: 350px;">
       <div class="card h-100">
         <div id="pieInOutBarang" class="p-3"></div>
       </div>
@@ -281,7 +281,7 @@
           series: [{
             name: 'Jumlah',
             colorByPoint: true,
-            size: '85%',
+            size: '100%',
             data: [
               {
                 name: 'Barang Masuk',
