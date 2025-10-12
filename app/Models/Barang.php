@@ -22,6 +22,11 @@ class Barang extends Model
     return $this->belongsTo(User::class, 'user_id', 'id');
   }
 
+  public function transaksi()
+  {
+    return $this->hasMany(TransaksiBarang::class, 'id_barang', 'id');
+  }
+
   public function getId()
   {
     return $this->attributes['id'];
@@ -51,5 +56,13 @@ class Barang extends Model
       ->get();
 
     return json_decode(json_encode($barang), true);
+  }
+
+  public function getStockAktualAttribute()
+  {
+    $masuk = $this->transaksi()->where('jenis', 'masuk')->sum('qty');
+    $keluar = $this->transaksi()->where('jenis', 'keluar')->sum('qty');
+
+    return $this->stock + ($masuk - $keluar);
   }
 }

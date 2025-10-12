@@ -58,7 +58,10 @@
   <script src="../../assets/js/config.js"></script>
 
   {{-- Selectize --}}
-  <link rel="stylesheet" href="{{ asset('css/selectize/selectize.default.css') }}"></link>
+  <link rel="stylesheet" href="{{ asset('css/selectize/selectize.default.css') }}">
+
+  {{-- Highchart --}}
+  <link rel="stylesheet" href="{{ asset('css/highcharts/css/highcharts.css') }}">
 
   @yield('style')
 </head>
@@ -127,6 +130,9 @@
 
   {{-- Selectize JS --}}
   <script src="{{ asset('js/selectize/selectize.js') }}"></script>
+
+  {{-- Highcharts JS --}}
+  <script src="{{ asset('js/highcharts/highcharts.js') }}"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

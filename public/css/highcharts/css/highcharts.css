@@ -95,7 +95,7 @@
         --highcharts-color-2: #efdf00;
 
         /* UI colors */
-        --highcharts-background-color: #141414;
+        --highcharts-background-color: #ffffff;
 
         /*
             Neutral color variations
@@ -125,7 +125,7 @@
     --highcharts-color-2: #efdf00;
 
     /* UI colors */
-    --highcharts-background-color: #141414;
+    --highcharts-background-color: #ffffff;
 
     /* Neutral color variations */
     --highcharts-neutral-color-100: #ffffff;
@@ -400,56 +400,7 @@ g.highcharts-series,
 
 /* Series options */
 
-/* Default colors */
-.highcharts-color-0 {
-    fill: var(--highcharts-color-0);
-    stroke: var(--highcharts-color-0);
-}
 
-.highcharts-color-1 {
-    fill: var(--highcharts-color-1);
-    stroke: var(--highcharts-color-1);
-}
-
-.highcharts-color-2 {
-    fill: var(--highcharts-color-2);
-    stroke: var(--highcharts-color-2);
-}
-
-.highcharts-color-3 {
-    fill: var(--highcharts-color-3);
-    stroke: var(--highcharts-color-3);
-}
-
-.highcharts-color-4 {
-    fill: var(--highcharts-color-4);
-    stroke: var(--highcharts-color-4);
-}
-
-.highcharts-color-5 {
-    fill: var(--highcharts-color-5);
-    stroke: var(--highcharts-color-5);
-}
-
-.highcharts-color-6 {
-    fill: var(--highcharts-color-6);
-    stroke: var(--highcharts-color-6);
-}
-
-.highcharts-color-7 {
-    fill: var(--highcharts-color-7);
-    stroke: var(--highcharts-color-7);
-}
-
-.highcharts-color-8 {
-    fill: var(--highcharts-color-8);
-    stroke: var(--highcharts-color-8);
-}
-
-.highcharts-color-9 {
-    fill: var(--highcharts-color-9);
-    stroke: var(--highcharts-color-9);
-}
 
 /* Various series-specific */
 .highcharts-area {

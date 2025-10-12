@@ -53,6 +53,8 @@
   Route::get('/user/{id}/destroy', [UserController::class, 'destroy'])->name('user.destroy');
 
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+  Route::get('/dashboard/filter', [DashboardController::class, 'filter'])->name('dashboard.filter');
+
 
   Route::get('/', function () {
     return redirect()->to('/login');
