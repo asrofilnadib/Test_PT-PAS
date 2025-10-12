@@ -2,6 +2,7 @@
 
   namespace App\Http\Controllers;
 
+  use App\Jobs\SendNotificationJob;
   use Carbon\Carbon;
   use Illuminate\Http\Request;
   use App\Models\TransaksiBarang;
@@ -57,6 +58,15 @@
         }
         $data->tanggal_transaksi = Carbon::parse($request->transaksi_barang)->toDateTimeString();
         $data->save();
+
+        $dataNotify = [
+          'nama_barang' => $data->barang->nama_barang ?? $data->barang->id,
+          'jenis_barang' => ucfirst($data->jenis),
+          'qty' => $data->qty,
+        ];
+
+        SendNotificationJob::dispatch($dataNotify);
+
         return redirect()->back()->with('success', "Data TransaksiBarang Berhasil Ditambahkan !");
       } catch (\Throwable $err) {
         return redirect()->back()->with('error', $err->getMessage());
@@ -109,6 +119,15 @@
         $data->tanggal_transaksi = Carbon::parse($request->tanggal_transaksi)->toDateTimeString();
         $data->updated_at = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
         $data->save();
+
+        $dataNotify = [
+          'nama_barang' => $data->barang->nama_barang ?? $data->barang->id,
+          'jenis_barang' => ucfirst($data->jenis),
+          'qty' => $data->qty,
+        ];
+
+        SendNotificationJob::dispatch($dataNotify);
+
         return redirect()->back()->with('success', "Data Transaksi Barang Berhasil Diupdate !");
       } catch (\Throwable $err) {
         return redirect()->back()->with('error', $err->getMessage());

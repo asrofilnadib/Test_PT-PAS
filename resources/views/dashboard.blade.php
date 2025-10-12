@@ -36,70 +36,95 @@
     <div class="col-xl-8 mb-4 col-lg-7 col-12">
       <div class="card h-100">
         <div class="card-header pb-1 pt-3">
-          <div class="d-flex justify-content-between mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="card-title mb-0">Statistics</h5>
             <small class="text-muted" id="updatedTime">Diperbarui otomatis</small>
           </div>
         </div>
-        <div class="card-body">
-          <div class="row mb-4">
-            <div class="col-md-3 col-6">
-              <div class="card h-100">
-                <div class="card-body d-flex align-items-center">
-                  <div class="badge rounded-pill bg-label-primary me-3 p-2">
-                    <i class="ti ti-box ti-sm"></i>
-                  </div>
-                  <div>
-                    <h5 class="mb-0" id="totalBarang">0</h5>
-                    <small>Total Barang</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-3 col-6">
-              <div class="card h-100">
-                <div class="card-body d-flex align-items-center">
-                  <div class="badge rounded-pill bg-label-success me-3 p-2">
-                    <i class="ti ti-arrow-down ti-sm"></i>
-                  </div>
-                  <div>
-                    <h5 class="mb-0" id="barangMasuk">0</h5>
-                    <small>Barang Masuk</small>
+        <div class="card-body d-flex flex-column justify-content-between">
+          <!-- Stats Cards Row 1 -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6 col-6">
+              <div class="card border shadow-none">
+                <div class="card-body p-3">
+                  <div class="d-flex align-items-center">
+                    <div class="badge rounded-pill bg-label-primary me-3 p-2">
+                      <i class="ti ti-box ti-sm"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <p class="mb-0 text-muted small">Total Barang</p>
+                      <h4 class="mb-0 fw-bold" id="totalBarang">0</h4>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="col-md-3 col-6">
-              <div class="card h-100">
-                <div class="card-body d-flex align-items-center">
-                  <div class="badge rounded-pill bg-label-danger me-3 p-2">
-                    <i class="ti ti-arrow-up ti-sm"></i>
-                  </div>
-                  <div>
-                    <h5 class="mb-0" id="barangKeluar">0</h5>
-                    <small>Barang Keluar</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-3 col-6">
-              <div class="card h-100">
-                <div class="card-body d-flex align-items-center">
-                  <div class="badge rounded-pill bg-label-warning me-3 p-2">
-                    <i class="ti ti-alert-triangle ti-sm"></i>
-                  </div>
-                  <div>
-                    <h5 class="mb-0" id="stokMenipis">0</h5>
-                    <small>Stok Menipis</small>
+            <div class="col-md-6 col-6">
+              <div class="card border shadow-none">
+                <div class="card-body p-3">
+                  <div class="d-flex align-items-center">
+                    <div class="badge rounded-pill bg-label-success me-3 p-2">
+                      <i class="ti ti-arrow-down ti-sm"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <p class="mb-0 text-muted small">Barang Masuk</p>
+                      <h4 class="mb-0 fw-bold text-success" id="barangMasuk">0</h4>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
+          <!-- Stats Cards Row 2 -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6 col-6">
+              <div class="card border shadow-none">
+                <div class="card-body p-3">
+                  <div class="d-flex align-items-center">
+                    <div class="badge rounded-pill bg-label-warning me-3 p-2">
+                      <i class="ti ti-alert-triangle ti-sm"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <p class="mb-0 text-muted small">Stok Menipis</p>
+                      <h4 class="mb-0 fw-bold text-warning" id="stokMenipis">0</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-6">
+              <div class="card border shadow-none">
+                <div class="card-body p-3">
+                  <div class="d-flex align-items-center">
+                    <div class="badge rounded-pill bg-label-danger me-3 p-2">
+                      <i class="ti ti-arrow-up ti-sm"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <p class="mb-0 text-muted small">Barang Keluar</p>
+                      <h4 class="mb-0 fw-bold text-danger" id="barangKeluar">0</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Info Section (Optional) -->
+          <div class="row">
+            <div class="col-12">
+              <div class="alert alert-primary mb-0" role="alert">
+                <div class="d-flex align-items-center">
+                  <i class="ti ti-info-circle me-2"></i>
+                  <small class="mb-0">
+                    Data statistik diperbarui secara real-time berdasarkan filter tanggal yang dipilih.
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
