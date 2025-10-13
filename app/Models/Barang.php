@@ -40,8 +40,7 @@ class Barang extends Model
 
   public function getDetailBarang($id)
   {
-    $barang = Barang::find($id)
-      ->select('barang.*')
+    $barang = Barang::select('barang.*')
       ->selectRaw('
             barang.stock +
             (
@@ -51,6 +50,7 @@ class Barang extends Model
             ) AS stock_aktual
         ')
       ->leftJoin('transaksi_barang', 'barang.id', '=', 'transaksi_barang.id_barang')
+      ->where('barang.id', $id)
       ->groupBy('barang.id')
       ->with('satuan')
       ->get();

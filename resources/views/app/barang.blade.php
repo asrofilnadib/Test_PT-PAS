@@ -183,7 +183,8 @@
           responsive: true
         });
 
-        $('.hapus').on('click', function (e) {
+        // Hapus event handler yang lama
+        $('.hapus').off('click').on('click', function (e) {
           e.preventDefault();
           const href = $(this).attr('href');
           Swal.fire({
@@ -199,10 +200,16 @@
           });
         });
 
-        $(document).on('click', '.edit', function () {
+        // Gunakan event delegation dengan selector yang lebih spesifik
+        $('#table').on('click', '.edit', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
           const id = $(this).data('id');
           const modal = $('#editModal');
           const form = $('#formEditBarang');
+
+          console.log('Edit clicked, ID:', id); // Debug log
 
           form.trigger('reset');
 
@@ -217,7 +224,7 @@
             success: function (response) {
               if (response.status === 'success') {
                 const data = response.data[0];
-                // console.log(data)
+                console.log('Data fetched:', data); // Debug log
 
                 // Isi field form dengan data API
                 form.find('input[name="nama_barang"]').val(data.nama_barang);
@@ -226,7 +233,7 @@
                 form.find('input[name="stock"]').val(data.stock_aktual);
                 form.find('input[name="expired_at"]').val(data.expired_at);
 
-                // Simpan ID barang ke form (hidden input biar bisa dikirim saat submit)
+                // Simpan ID barang ke form
                 if (form.find('input[name="id"]').length === 0) {
                   form.append(`<input type="hidden" name="id" value="${data.id}">`);
                 } else {
@@ -235,20 +242,19 @@
 
                 // Reset style modal
                 modal.find('.modal-body').css('opacity', '1');
-                modal.modal('show');
               } else {
                 Swal.fire('Error', 'Item not found.', 'error');
+                modal.find('.modal-body').css('opacity', '1');
               }
             },
             error: function (xhr) {
-              console.error(xhr);
+              console.error('Ajax error:', xhr);
               Swal.fire('Error', 'Failed to fetch item data.', 'error');
               modal.find('.modal-body').css('opacity', '1');
             }
           });
         });
       });
-
     </script>
   </x-slot>
 </x-app-layout>

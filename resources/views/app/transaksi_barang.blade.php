@@ -43,7 +43,7 @@
                 <td>{{ date('Y-m-d', strtotime($d->tanggal_transaksi)) }}</td>
                 <td>
                   <div class="d-flex">
-                    <button class="btn btn-sm btn-warning me-2 edit" data-id="{{ $d->id }}">
+                    <button class="btn btn-sm btn-warning me-2 edit" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{ $d->id }}">
                       <i class="ti ti-edit"></i>
                     </button>
                     <a href="{{ route('transaksi_barang.destroy', $d->id) }}" class="btn btn-sm btn-danger hapus">
@@ -81,7 +81,7 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Nama Barang</label>
-              <select name="id_barang" id="id_barang" class="selectize" required>
+              <select name="id_barang" id="id_add" class="selectize" required>
                 <option value="" disabled hidden selected>-- Pilih Barang --</option>
                 @foreach($barang as $b)
                   @if($b->show == 1)
@@ -130,8 +130,8 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Nama Barang</label>
-              <select name="id_barang" id="id_barang" class="selectize" required>
-                <option value="" disabled selected>-- Pilih Barang --</option>
+              <select name="id_barang" id="id_edit" class="selectize" required>
+                <option value="" disabled hidden selected>-- Pilih Barang --</option>
                 @foreach($barang as $b)
                   @if($b->show == 1)
                     <option value="{{ $b->id }}">{{ $b->id }} - {{ $b->nama_barang }}</option>
@@ -215,7 +215,7 @@
             },
             success: function (response) {
               if (response.status === 'success') {
-                const data = response.data[0];
+                const data = response.data;
 
                 // Fill in form fields with API response
                 form.find('select[name="jenis"]').val(data.jenis).trigger('change'); // Select option for transaction type
