@@ -17,6 +17,7 @@
 
     public function filter(Request $request)
     {
+      //
       try {
         $from = $request->from_date ? Carbon::createFromFormat('Y-m-d', $request->from_date)->startOfDay() : null;
         $to = $request->to_date ? Carbon::createFromFormat('Y-m-d', $request->to_date)->endOfDay() : null;
@@ -24,6 +25,7 @@
         return response()->json(['error' => 'Invalid date format'], 400);
       }
 
+      // query transaksi
       $queryMasuk = TransaksiBarang::where('jenis', 'masuk');
       $queryKeluar = TransaksiBarang::where('jenis', 'keluar');
       $queryAktivitas = TransaksiBarang::with(['barang', 'user']);
@@ -41,13 +43,35 @@
 
       $barangMenipis = 0;
       try {
-        $barangMenipis = Barang::all()->filter(function($barang) {
+        $barangMenipis = Barang::all()->filter(function ($barang) {
           return $barang->stock_aktual < 10;
         })->count();
       } catch (\Exception $e) {
         \Log::error('Error calculating barang menipis: ' . $e->getMessage());
       }
 
+      // stock chart
+      $stockAman = 0;
+      $stockMenipis = 0;
+      $stockHabis = 0;
+
+      $listBarang = Barang::with('transaksi')->get();
+
+      foreach ($listBarang as $barang) {
+        $masuk = $barang->transaksi()->where('jenis', 'masuk')->sum('qty');
+        $keluar = $barang->transaksi()->where('jenis', 'keluar')->sum('qty');
+        $aktual = $barang->stock + ($masuk - $keluar);
+
+        if ($aktual > 10) {
+          $stockAman++;
+        } else if ($aktual <= 10 ) {
+          $stockMenipis++;
+        } else {
+          $stockHabis++;
+        }
+      }
+
+      // aktivitas barang
       $aktivitas = $queryAktivitas->latest()->get()->map(function ($t) {
         return [
           'tanggal' => $t->tanggal_transaksi
@@ -65,6 +89,9 @@
         'barang_masuk' => $barangMasuk,
         'barang_keluar' => $barangKeluar,
         'barang_menipis' => $barangMenipis,
+        'stock_aman' => $stockAman,
+        'stock_menipis' => $stockMenipis,
+        'stock_habis' => $stockHabis,
         'aktivitas' => $aktivitas
       ]);
     }

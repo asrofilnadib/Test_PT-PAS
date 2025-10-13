@@ -166,7 +166,7 @@
   <!-- Script -->
   <x-slot name="script">
     <script>
-      $(document).ready(function() {
+      $(document).ready(function () {
         // --- Initialize Chart ---
         let chart = Highcharts.chart('pieInOutBarang', {
           chart: {
@@ -176,18 +176,19 @@
             style: {
               fontFamily: '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
             },
-            spacing: [20, 20, 20, 20]
+            spacing: [15, 15, 15, 15],
+            height: null // Auto height
           },
-
           title: {
-            text: 'Komposisi Barang Masuk & Keluar',
+            text: 'Komposisi Ketersediaan Stock Barang',
             align: 'left',
             style: {
               fontWeight: '600',
               fontSize: '18px',
               color: '#2c3e50'
             },
-            margin: 25
+            margin: 20,
+            x: 5
           },
           tooltip: {
             backgroundColor: 'rgba(0, 0, 0, 0.85)',
@@ -205,7 +206,7 @@
               fontWeight: '400'
             },
             useHTML: true,
-            formatter: function() {
+            formatter: function () {
               return `
         <div style="padding: 8px 12px;">
           <div style="font-weight: 600; margin-bottom: 4px; font-size: 14px;">
@@ -225,156 +226,200 @@
             pie: {
               allowPointSelect: true,
               cursor: 'pointer',
-              borderWidth: 3,
+              borderWidth: 2,
               borderColor: '#ffffff',
-              colors: ['#10b981', '#ef4444'], // Modern green & red
+              colors: ['#10b981', '#ef4444', '#3b82f6'],
               dataLabels: {
                 enabled: true,
-                distance: 15,
-                format: '<b>{point.y}</b>',
+                distance: 20,
+                format: '<b>{point.percentage:.1f}%</b>',
                 style: {
-                  fontSize: '15px',
+                  fontSize: '14px',
                   fontWeight: '600',
                   color: '#2c3e50',
                   textOutline: '2px #ffffff'
                 }
               },
               showInLegend: true,
-              innerSize: '0%', // Solid pie
+              innerSize: '0%',
               shadow: false,
+              size: '75%',
+              center: ['40%', '50%'],
               states: {
                 hover: {
                   brightness: 0.1,
                   halo: {
-                    size: 8,
+                    size: 6,
                     opacity: 0.25
-                  }
-                }
-              },
-              point: {
-                events: {
-                  mouseOver: function() {
-                    this.graphic.attr({
-                      translateX: 8,
-                      translateY: 8
-                    });
-                  },
-                  mouseOut: function() {
-                    this.graphic.attr({
-                      translateX: 0,
-                      translateY: 0
-                    });
                   }
                 }
               }
             }
           },
-
           legend: {
             layout: 'vertical',
             align: 'right',
             verticalAlign: 'middle',
             floating: false,
-            backgroundColor: '#f8f9fa',
-            borderRadius: 8,
-            padding: 12,
-            itemMarginTop: 8,
-            itemMarginBottom: 8,
+            backgroundColor: 'transparent',
+            borderWidth: 0,
+            padding: 0,
+            margin: 10,
+            itemMarginTop: 6,
+            itemMarginBottom: 6,
+            itemDistance: 15,
             itemStyle: {
               fontWeight: '500',
               color: '#2c3e50',
-              fontSize: '14px',
-              cursor: 'pointer'
+              fontSize: '13px',
+              cursor: 'pointer',
+              lineHeight: '18px'
             },
             itemHoverStyle: {
               color: '#000000'
             },
-            symbolRadius: 4,
-            symbolHeight: 12,
-            symbolWidth: 12,
+            symbolRadius: 3,
+            symbolHeight: 10,
+            symbolWidth: 10,
             symbolPadding: 8,
             useHTML: true,
-            labelFormatter: function() {
+            labelFormatter: function () {
               return `
-        <span style="display: inline-block; width: 120px;">
-          ${this.name}
-        </span>
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <span style="white-space: nowrap;">${this.name}</span>
+          <span style="color: #64748b; font-size: 12px;">(${this.y})</span>
+        </div>
       `;
             }
           },
-
           series: [{
             name: 'Jumlah',
             colorByPoint: true,
-            size: '100%',
             data: [
               {
-                name: 'Barang Masuk',
+                name: 'Stock Aman',
                 y: 0,
-                color: {
-                  linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-                  stops: [
-                    [0, '#10b981'],
-                    [1, '#10b981']
-                  ]
-                }
+                color: '#10b981'
               },
               {
-                name: 'Barang Keluar',
+                name: 'Stock Menipis',
                 y: 0,
-                color: {
-                  linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-                  stops: [
-                    [0, '#ef4444'],
-                    [1, '#dc2626']
-                  ]
-                }
+                color: '#ef4444'
+              },
+              {
+                name: 'Stock Habis',
+                y: 0,
+                color: '#3b82f6'
               }
             ]
           }],
-
-          credits: { enabled: false },
-
+          credits: {enabled: false},
           responsive: {
-            rules: [{
-              condition: { maxWidth: 768 },
-              chartOptions: {
-                legend: {
-                  layout: 'horizontal',
-                  align: 'center',
-                  verticalAlign: 'bottom',
-                  floating: false,
-                  y: 0
-                },
-                title: {
-                  style: { fontSize: '16px' }
-                },
-                plotOptions: {
-                  pie: {
-                    dataLabels: {
-                      distance: 10,
-                      style: { fontSize: '13px' }
+            rules: [
+              {
+                condition: {maxWidth: 768},
+                chartOptions: {
+                  chart: {
+                    spacing: [10, 10, 10, 10]
+                  },
+                  title: {
+                    style: {fontSize: '16px'},
+                    margin: 15,
+                    x: 0
+                  },
+                  plotOptions: {
+                    pie: {
+                      size: '85%',
+                      center: ['50%', '45%'],
+                      dataLabels: {
+                        distance: 15,
+                        style: {fontSize: '12px'}
+                      }
+                    }
+                  },
+                  legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    floating: false,
+                    y: 5,
+                    margin: 5,
+                    itemMarginTop: 4,
+                    itemMarginBottom: 4,
+                    itemDistance: 10,
+                    itemStyle: {
+                      fontSize: '12px'
+                    },
+                    symbolHeight: 8,
+                    symbolWidth: 8,
+                    symbolPadding: 6
+                  }
+                }
+              },
+              {
+                condition: {maxWidth: 480},
+                chartOptions: {
+                  chart: {
+                    spacing: [8, 8, 8, 8]
+                  },
+                  title: {
+                    style: {fontSize: '14px'},
+                    margin: 12
+                  },
+                  plotOptions: {
+                    pie: {
+                      size: '80%',
+                      center: ['50%', '42%'],
+                      dataLabels: {
+                        distance: 10,
+                        style: {fontSize: '11px'},
+                        format: '<b>{point.percentage:.0f}%</b>'
+                      }
+                    }
+                  },
+                  legend: {
+                    itemMarginTop: 3,
+                    itemMarginBottom: 3,
+                    itemDistance: 8,
+                    itemStyle: {
+                      fontSize: '11px'
+                    },
+                    symbolHeight: 7,
+                    symbolWidth: 7,
+                    symbolPadding: 5,
+                    labelFormatter: function () {
+                      return `
+                <div style="display: flex; align-items: center; gap: 3px;">
+                  <span style="white-space: nowrap; font-size: 11px;">${this.name}</span>
+                </div>
+              `;
                     }
                   }
                 }
               }
-            }]
+            ]
           }
         });
 
         let table = $('#tableAktivitasBarang').DataTable({
           columns: [
-            { data: 'tanggal' },
-            { data: 'nama_barang' },
-            { data: 'jenis' },
-            { data: 'qty' },
-            { data: 'user' }
+            {data: 'tanggal'},
+            {data: 'nama_barang'},
+            {data: 'jenis'},
+            {data: 'qty'},
+            {data: 'user'}
+          ],
+          columnDefs: [
+            {width: '20%', target: 0},
+            {width: '30%', target: 1},
+            {width: '12%', target: 2},
+            {width: '15%', target: 3},
           ]
         });
 
         loadDashboardData();
 
-        $('#filterForm').on('submit', function(e) {
+        $('#filterForm').on('submit', function (e) {
           e.preventDefault();
           loadDashboardData($('#fromDate').val(), $('#toDate').val());
         });
@@ -383,9 +428,9 @@
           $.ajax({
             url: `/dashboard/filter`,
             type: "GET",
-            data: { from_date: from, to_date: to },
+            data: {from_date: from, to_date: to},
             beforeSend: () => Swal.showLoading(),
-            success: function(res) {
+            success: function (res) {
               Swal.close();
 
               $('#totalBarang').text(res.total_barang);
@@ -395,14 +440,15 @@
               $('#updatedTime').text('Diperbarui: ' + new Date().toLocaleString());
 
               chart.series[0].setData([
-                { name: 'Barang Masuk', y: res.barang_masuk },
-                { name: 'Barang Keluar', y: res.barang_keluar }
+                {name: 'Stock Aman', y: res.stock_aman},
+                {name: 'Stock Menipis', y: res.stock_menipis},
+                {name: 'Stock Habis', y: res.stock_habis},
               ]);
 
               table.clear().rows.add(res.aktivitas).draw();
             },
-            error: function() {
-              Swal.fire({ icon: 'error', text: 'Gagal memuat data dashboard.' });
+            error: function () {
+              Swal.fire({icon: 'error', text: 'Gagal memuat data dashboard.'});
             }
           });
         }
