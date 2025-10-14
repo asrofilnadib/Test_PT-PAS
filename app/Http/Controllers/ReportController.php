@@ -99,7 +99,7 @@
         \Carbon\Carbon::parse($toDate)->format('d/m/Y');
 
       // Get manager info
-      $manager = Auth::user()->first();
+      $manager = User::role('Admin')->first();
       $noManager = $manager->no_telp ?? null;
       $emailManager = $manager->email ?? null;
 
@@ -122,42 +122,41 @@
 
       $subject = $request->input('subject');
       $body = $request->input('body');
-      $rawReportData = $request->input('report_data');
-      $decodedJson = html_entity_decode($rawReportData);
-      $reportData = json_decode($decodedJson, true);
+      $reportData = json_decode(html_entity_decode($request->input('report_data')), true);
       $periode = $request->input('periode') ?? now()->format('d/m/Y');
 
       // Manager email
-      $manager = \App\Models\User::role('Admin')->first();
+      $manager = User::role('Admin')->first();
       if (!$manager || !$manager->email) {
         return redirect()->route('report')->with('error', 'Email manager tidak ditemukan');
       }
 
-      $filter = [
-        'id_barang' => $request->input('id_barang'),
-        'filter_by' => $request->input('filter_by'),
-        'from_date' => $request->input('from_date'),
-        'to_date' => $request->input('to_date'),
-      ];
+//      $filter = [
+//        'id_barang' => $request->input('id_barang'),
+//        'filter_by' => $request->input('filter_by'),
+//        'from_date' => $request->input('from_date'),
+//        'to_date' => $request->input('to_date'),
+//      ];
 
       try {
-        $pdfPath = $this->barang->generatePDFFile($filter);
-
-        $excelPath = storage_path('app/public/laporan_barang_' . now()->format('Ymd_His') . '.xls');
-        $this->generateExcelFile($reportData, $excelPath);
+//        $pdfPath = $this->barang->generatePDFFile($filter);
+//
+//        $excelPath = storage_path('app/public/laporan_barang_' . now()->format('Ymd_His') . '.xls');
+//        $this->generateExcelFile($reportData, $excelPath);
 
         $data = [
           'subject' => $subject,
           'body' => $body,
           'periode' => $periode,
+          'report_data' => $reportData
         ];
 
         Mail::to($manager->email)->send((new MailManager($data))
-          ->attach($pdfPath)
-          ->attach($excelPath)
+//          ->attach($pdfPath)
+//          ->attach($excelPath)
         );
 
-        File::delete([$pdfPath, $excelPath]);
+//        File::delete([$pdfPath, $excelPath]);
 
         return redirect()->route('report')
           ->with('success', 'Email berhasil dikirim ke ' . $manager->email);

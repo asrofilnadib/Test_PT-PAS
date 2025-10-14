@@ -35,7 +35,8 @@
         ->view('emails.notification')
         ->with([
           'body' => $this->data['body'],
-          'periode' => $this->data['periode']
+          'periode' => $this->data['periode'],
+          'report_data' => $this->data['report_data'],
         ]);
     }
   }
