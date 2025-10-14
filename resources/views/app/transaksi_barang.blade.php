@@ -197,7 +197,10 @@
         });
 
         // edit handler
-        $(document).on('click', '.edit', function () {
+        $(document).on('click', '.edit', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
           const id = $(this).data('id');
           const modal = $('#editModal');
           const form = $('#formEditBarang');

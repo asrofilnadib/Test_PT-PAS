@@ -41,6 +41,11 @@
             <div data-i18n="Kelola Transaksi Barang">Kelola Transaksi Barang</div>
           </a>
         </li>
+        <li class="menu-item {{ Request::routeIs('reporting_barang') ? 'active' : '' }}">
+          <a href="{{ route('report') }}" class="menu-link">
+            <div data-i18n="Laporan Barang">Laporan Barang</div>
+          </a>
+        </li>
       </ul>
     </li>
 

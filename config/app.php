@@ -1,5 +1,7 @@
 <?php
 
+  use Barryvdh\DomPDF\Facade;
+  use Barryvdh\DomPDF\PDF;
   use RealRashid\SweetAlert\Facades\Alert;
   use RealRashid\SweetAlert\SweetAlertServiceProvider;
 
@@ -230,6 +232,8 @@
       'Validator' => Illuminate\Support\Facades\Validator::class,
       'View' => Illuminate\Support\Facades\View::class,
       'Alert' => Alert::class,
+      'Pdf' => PDF::class,
+      'PDF' => Facade::class,
     ],
 
   ];

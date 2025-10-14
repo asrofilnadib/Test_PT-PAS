@@ -36,8 +36,9 @@
     {
       try {
         if($request->jenis === "Keluar"){
-          $barang = Barang::find($request->id_barang);
-          $jumlah = $barang->stock - $request->qty;
+          $model = new Barang();
+          $barang = $model->getDetailBarang($request->id_barang);
+          $jumlah = $barang[0]['stock_aktual'] - $request->qty;
           if($jumlah < 0 ){
             return redirect()->route('transaksi_barang')->with('error', "Stock Barang Tidak Mencukupi !");
           }

@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>{{ $data['subject'] ?? 'Laporan Warehouse' }}</title>
 </head>
 <body>
-<h2>Notifikasi Barang</h2>
-<p>
-  Barang <strong>{{ $data['nama_barang'] }}</strong> telah
-  <strong>{{ $data['jenis_barang'] }}</strong> dengan jumlah
-  <strong>{{ $data['qty'] }}</strong>.
+<h2>{{ $data['subject'] }}</h2>
+<p>{!! nl2br(e($body)) !!}</p>
+
+<p><strong>Periode:</strong> {{ $periode ?? '-' }}</p>
+
+<p>📎 Laporan ini dilampirkan dalam bentuk file PDF dan Excel.</p>
+
+<p style="font-size: 12px; color: #777; margin-top: 16px;">
+  Dikirim otomatis oleh sistem Warehouse pada {{ now()->format('d/m/Y H:i') }}.
 </p>
-<p>Tanggal: {{ now()->format('Y-m-d H:i:s') }}</p>
 </body>
 </html>

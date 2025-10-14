@@ -167,7 +167,7 @@
   <x-slot name="script">
     <script>
       $(document).ready(function () {
-        // --- Initialize Chart ---
+        // initialize chart
         let chart = Highcharts.chart('pieInOutBarang', {
           chart: {
             type: 'pie',
@@ -201,7 +201,7 @@
               width: 4
             },
             style: {
-              color: '#ffffff',
+              color: '#000000',
               fontSize: '13px',
               fontWeight: '400'
             },
@@ -212,10 +212,10 @@
           <div style="font-weight: 600; margin-bottom: 4px; font-size: 14px;">
             ${this.point.name}
           </div>
-          <div style="color: #e0e0e0; font-size: 13px;">
-            <b>${this.point.y.toLocaleString('id-ID')}</b> unit
+          <div style="color: #848484; font-size: 13px;">
+            <b>${this.point.y.toLocaleString('id-ID')}</b> Barang
           </div>
-          <div style="color: #a0a0a0; font-size: 12px; margin-top: 2px;">
+          <div style="color: #4e4e4e; font-size: 12px; margin-top: 2px;">
             ${this.percentage.toFixed(1)}% dari total
           </div>
         </div>
@@ -304,12 +304,12 @@
               {
                 name: 'Stock Menipis',
                 y: 0,
-                color: '#ef4444'
+                color: '#ef8e44'
               },
               {
                 name: 'Stock Habis',
                 y: 0,
-                color: '#3b82f6'
+                color: '#f63b3b'
               }
             ]
           }],
@@ -401,6 +401,7 @@
           }
         });
 
+        // initialize datatable
         let table = $('#tableAktivitasBarang').DataTable({
           columns: [
             {data: 'tanggal'},
@@ -425,6 +426,7 @@
         });
 
         function loadDashboardData(from = null, to = null) {
+          // fetch api for filter dashboard
           $.ajax({
             url: `/dashboard/filter`,
             type: "GET",

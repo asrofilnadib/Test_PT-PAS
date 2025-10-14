@@ -12131,6 +12131,10 @@ button.list-group-item-gray.active {
   background-color: #f8f7fa !important;
 }
 
+.bg-opacity-10 {
+  --bs-bg-opacity: .1;
+}
+
 .bg-transparent {
   --bs-bg-opacity: 1;
   background-color: transparent !important;

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Mail;
+  namespace App\Mail;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
+  use Illuminate\Bus\Queueable;
+  use Illuminate\Contracts\Queue\ShouldQueue;
+  use Illuminate\Mail\Mailable;
+  use Illuminate\Queue\SerializesModels;
 
-class MailManager extends Mailable
-{
+  class MailManager extends Mailable
+  {
     use Queueable, SerializesModels;
 
     /**
@@ -21,7 +21,7 @@ class MailManager extends Mailable
 
     public function __construct($data)
     {
-        $this->data = $data;
+      $this->data = $data;
     }
 
     /**
@@ -31,8 +31,11 @@ class MailManager extends Mailable
      */
     public function build()
     {
-      return $this->subject("Notifikasi Barang ${this->data['nama_barang']}")
+      return $this->subject($this->data['subject'])
         ->view('emails.notification')
-        ->with(['data' => $this->data]);
+        ->with([
+          'body' => $this->data['body'],
+          'periode' => $this->data['periode']
+        ]);
     }
-}
+  }

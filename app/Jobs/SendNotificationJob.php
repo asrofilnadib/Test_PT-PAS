@@ -3,6 +3,7 @@
   namespace App\Jobs;
 
   use App\Mail\MailManager;
+  use http\Env;
   use Illuminate\Mail\Mailable;
   use Illuminate\Bus\Queueable;
   use Illuminate\Contracts\Queue\ShouldQueue;
@@ -37,14 +38,14 @@
     public function handle()
     {
       // --- Kirim Email ---
-      Mail::to('nadib.nabit@gmail.com')->send(new MailManager($this->data));
+      Mail::to(env('MAIL_USERNAME'))->send(new MailManager($this->data));
 
       // --- Kirim Telegram ---
       $botToken = env('TELEGRAM_BOT_TOKEN');
       $chatID = env('TELEGRAM_CHAT_ID');
       $text = "📦 *Notifikasi Barang*\n\n"
         . "Barang: *{$this->data['nama_barang']}*\n"
-        . "Jenis: *{$this->data['jenis_transaksi']}*\n"
+        . "Jenis: *{$this->data['jenis_barang']}*\n"
         . "Jumlah: *{$this->data['qty']}*\n"
         . "Tanggal: " . now()->format('d M Y H:i');
 

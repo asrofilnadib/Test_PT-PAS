@@ -159,7 +159,7 @@
             </div>
             <div class="form-group mb-3">
               <label>Stock</label>
-              <input type="number" name="stock" class="form-control" placeholder="Masukkan stock barang" required disabled>
+              <input type="number" name="stock" class="form-control" placeholder="Masukkan stock barang" required>
             </div>
             <div class="form-group mb-3">
               <label>Tanggal Kadaluarsa</label>
@@ -179,11 +179,12 @@
   <x-slot name="script">
     <script>
       $(document).ready(function () {
-        const table = $('#table').DataTable({
+        // initialize datatable
+        $('#table').DataTable({
           responsive: true
         });
 
-        // Hapus event handler yang lama
+        // Hapus event handler
         $('.hapus').off('click').on('click', function (e) {
           e.preventDefault();
           const href = $(this).attr('href');
@@ -200,16 +201,14 @@
           });
         });
 
-        // Gunakan event delegation dengan selector yang lebih spesifik
-        $('#table').on('click', '.edit', function (e) {
+        // event delegation
+        $(document).on('click', '.edit', function (e) {
           e.preventDefault();
           e.stopPropagation();
 
           const id = $(this).data('id');
           const modal = $('#editModal');
           const form = $('#formEditBarang');
-
-          console.log('Edit clicked, ID:', id); // Debug log
 
           form.trigger('reset');
 
@@ -224,23 +223,22 @@
             success: function (response) {
               if (response.status === 'success') {
                 const data = response.data[0];
-                console.log('Data fetched:', data); // Debug log
+                // console.log(data);
 
-                // Isi field form dengan data API
+                // initiation field form with the API
                 form.find('input[name="nama_barang"]').val(data.nama_barang);
                 form.find('select[name="jenis_barang"]').val(data.jenis_barang);
                 form.find('select[name="id_satuan"]').val(data.id_satuan);
                 form.find('input[name="stock"]').val(data.stock_aktual);
                 form.find('input[name="expired_at"]').val(data.expired_at);
 
-                // Simpan ID barang ke form
+                // save ID barang to form
                 if (form.find('input[name="id"]').length === 0) {
                   form.append(`<input type="hidden" name="id" value="${data.id}">`);
                 } else {
                   form.find('input[name="id"]').val(data.id);
                 }
 
-                // Reset style modal
                 modal.find('.modal-body').css('opacity', '1');
               } else {
                 Swal.fire('Error', 'Item not found.', 'error');

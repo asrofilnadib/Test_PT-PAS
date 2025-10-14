@@ -44,7 +44,7 @@
       $barangMenipis = 0;
       try {
         $barangMenipis = Barang::all()->filter(function ($barang) {
-          return $barang->stock_aktual < 10;
+          return $barang->stock_aktual <= 10 && $barang->stock_aktual > 0;
         })->count();
       } catch (\Exception $e) {
         \Log::error('Error calculating barang menipis: ' . $e->getMessage());
@@ -64,7 +64,7 @@
 
         if ($aktual > 10) {
           $stockAman++;
-        } else if ($aktual <= 10 ) {
+        } else if ($aktual <= 10 && $aktual >= 1) {
           $stockMenipis++;
         } else {
           $stockHabis++;
