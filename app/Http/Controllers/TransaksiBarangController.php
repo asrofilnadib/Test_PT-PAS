@@ -190,9 +190,9 @@
     {
       try{
         $transaksi_barang = TransaksiBarang::findOrFail($id);
-        unlink("file/transaksi_barang/" . $transaksi_barang->foto);
+//        unlink("file/transaksi_barang/" . $transaksi_barang->foto);
         $transaksi_barang->delete();
-        return redirect()->back()->with('success', "Data transaksi_barang Berhasil Di Hapus !");
+        return redirect()->back()->with('success', "Data transaksi barang dengan ID #{$transaksi_barang->id} berhasil di hapus !");
       }catch(\Exception $e){
         return redirect()->back()->with('error', $e->getMessage());
       }

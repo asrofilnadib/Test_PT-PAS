@@ -139,7 +139,7 @@
          }*/
 
         $barang->delete();
-        return redirect()->back()->with('success', 'Data barang berhasil dihapus!');
+        return redirect()->back()->with('success', "Data barang {$barang->nama_barang} berhasil dihapus!");
       } catch (\Throwable $e) {
         return redirect()->back()->with('error', 'Gagal menghapus data barang.');
       }

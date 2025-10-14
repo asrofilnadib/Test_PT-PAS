@@ -220,7 +220,7 @@
         });
 
         // delete confirmation
-        $('.hapus').on('click', function (e) {
+        $('.hapus').off('click').on('click', function (e) {
           e.preventDefault();
           const href = $(this).attr('href');
           Swal.fire({
