@@ -281,7 +281,10 @@
 
     public function pdf(Request $request)
     {
-      $pdfPath = $this->barang->generatePDFFile($request->all());
+      $filters = $request->only(['id_barang', 'filter_by', 'from_date', 'to_date']);
+//      dd($filters);
+      $pdfPath = $this->barang->generatePDFFile($filters);
+
       return response()->file($pdfPath);
     }
   }

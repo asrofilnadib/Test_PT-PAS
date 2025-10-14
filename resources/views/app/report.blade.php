@@ -1,3 +1,4 @@
+{{--@dd(request()->query())--}}
 <x-app-layout>
   <x-slot name="header">
   </x-slot>
@@ -83,8 +84,8 @@
               </div>
               @if(isset($data) && $data->isNotEmpty())
                 <div class="d-flex gap-2">
-                  <a href="{{ route('report.pdf') }}" class="btn btn-danger btn-sm">
-                    <i class="ti ti-file-text me-1"></i>  Print PDF
+                  <a href="{{ url('report/print') . '?' . http_build_query(request()->query()) }}" class="btn btn-danger btn-sm">
+                    <i class="ti ti-file-text me-1"></i> Print PDF
                   </a>
                   <button type="button" class="btn btn-success btn-sm" onclick="exportToExcel()">
                     <i class="ti ti-file-spreadsheet me-1"></i> Export Excel
