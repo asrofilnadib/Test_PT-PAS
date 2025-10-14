@@ -130,19 +130,7 @@
         return redirect()->route('report')->with('error', 'Email manager tidak ditemukan');
       }
 
-//      $filter = [
-//        'id_barang' => $request->input('id_barang'),
-//        'filter_by' => $request->input('filter_by'),
-//        'from_date' => $request->input('from_date'),
-//        'to_date' => $request->input('to_date'),
-//      ];
-
       try {
-//        $pdfPath = $this->barang->generatePDFFile($filter);
-//
-//        $excelPath = storage_path('app/public/laporan_barang_' . now()->format('Ymd_His') . '.xls');
-//        $this->generateExcelFile($reportData, $excelPath);
-
         $data = [
           'subject' => $subject,
           'body' => $body,
@@ -150,12 +138,7 @@
           'report_data' => $reportData
         ];
 
-        Mail::to($admin->email)->send((new MailManager($data))
-//          ->attach($pdfPath)
-//          ->attach($excelPath)
-        );
-
-//        File::delete([$pdfPath, $excelPath]);
+        Mail::to($admin->email)->send((new MailManager($data)));
 
         return redirect()->route('report')
           ->with('success', 'Email berhasil dikirim ke ' . $admin->email);

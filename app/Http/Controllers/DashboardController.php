@@ -17,7 +17,6 @@
 
     public function filter(Request $request)
     {
-      //
       try {
         $from = $request->from_date ? Carbon::createFromFormat('Y-m-d', $request->from_date)->startOfDay() : null;
         $to = $request->to_date ? Carbon::createFromFormat('Y-m-d', $request->to_date)->endOfDay() : null;
@@ -25,7 +24,7 @@
         return response()->json(['error' => 'Invalid date format'], 400);
       }
 
-      // query transaksi
+      // query item transaction with date filter
       $queryMasuk = TransaksiBarang::where('jenis', 'masuk');
       $queryKeluar = TransaksiBarang::where('jenis', 'keluar');
       $queryAktivitas = TransaksiBarang::with(['barang', 'user']);
@@ -39,29 +38,26 @@
       $barangMasuk = $queryMasuk->sum('qty');
       $barangKeluar = $queryKeluar->sum('qty');
 
-      $totalBarang = Barang::count();
+      // take the items that are involved in transactions during the filter period
+      $barangIds = TransaksiBarang::when($from && $to, function ($q) use ($from, $to) {
+        $q->whereBetween('tanggal_transaksi', [$from, $to]);
+      })->pluck('id_barang')->unique();
 
-      $barangMenipis = 0;
-      try {
-        $barangMenipis = Barang::all()->filter(function ($barang) {
-          return $barang->stock_aktual <= 10 && $barang->stock_aktual > 0;
-        })->count();
-      } catch (\Exception $e) {
-        \Log::error('Error calculating barang menipis: ' . $e->getMessage());
-      }
+      // total of item in the filter period
+      $totalBarang = Barang::whereIn('id', $barangIds)->count();
 
-      // stock chart
-      $stockAman = 0;
-      $stockMenipis = 0;
-      $stockHabis = 0;
+      $stockAman = $stockMenipis = $stockHabis = 0;
 
-      $listBarang = Barang::with('transaksi')->get();
+      $listBarang = Barang::with(['transaksi' => function ($q) use ($from, $to) {
+        if ($from && $to) {
+          $q->whereBetween('tanggal_transaksi', [$from, $to]);
+        }
+      }])->whereIn('id', $barangIds)->get();
 
       foreach ($listBarang as $barang) {
         $masuk = $barang->transaksi()->where('jenis', 'masuk')->sum('qty');
         $keluar = $barang->transaksi()->where('jenis', 'keluar')->sum('qty');
         $aktual = $barang->stock + ($masuk - $keluar);
-
         if ($aktual > 10) {
           $stockAman++;
         } else if ($aktual <= 10 && $aktual >= 1) {
@@ -71,7 +67,8 @@
         }
       }
 
-      // aktivitas barang
+      $barangMenipis = $stockMenipis;
+
       $aktivitas = $queryAktivitas->latest()->get()->map(function ($t) {
         return [
           'tanggal' => $t->tanggal_transaksi
