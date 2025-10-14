@@ -58,15 +58,8 @@
           $data->foto = $nama_file;
         }
         $data->tanggal_transaksi = Carbon::parse($request->transaksi_barang)->toDateTimeString();
+        $data->status = 'Pending';
         $data->save();
-
-        $dataNotify = [
-          'nama_barang' => $data->barang->nama_barang ?? $data->barang->id,
-          'jenis_barang' => ucfirst($data->jenis),
-          'qty' => $data->qty,
-        ];
-
-        SendNotificationJob::dispatch($dataNotify);
 
         return redirect()->back()->with('success', "Data TransaksiBarang Berhasil Ditambahkan !");
       } catch (\Throwable $err) {
@@ -121,17 +114,72 @@
         $data->updated_at = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
         $data->save();
 
-        $dataNotify = [
-          'nama_barang' => $data->barang->nama_barang ?? $data->barang->id,
-          'jenis_barang' => ucfirst($data->jenis),
-          'qty' => $data->qty,
-        ];
-
-        SendNotificationJob::dispatch($dataNotify);
-
         return redirect()->back()->with('success', "Data Transaksi Barang Berhasil Diupdate !");
       } catch (\Throwable $err) {
         return redirect()->back()->with('error', $err->getMessage());
+      }
+    }
+
+    public function updateStatus(Request $request)
+    {
+      try {
+        // Validasi input
+        $request->validate([
+          'id' => 'required|exists:transaksi_barang,id',
+          'status' => 'required|in:Approve,Reject'
+        ]);
+
+        $transaksi = TransaksiBarang::findOrFail($request->id);
+
+        // Cek apakah status masih pending
+        if ($transaksi->status !== 'Pending') {
+          return response()->json([
+            'success' => false,
+            'message' => 'Transaksi sudah diproses sebelumnya'
+          ], 400);
+        }
+
+        // Update status
+        $transaksi->status = $request->status;
+        $transaksi->updated_at = Carbon::now();
+        $transaksi->save();
+
+        if ($request->status === 'Approve') {
+          $barang = Barang::find($transaksi->id_barang);
+
+          if ($barang) {
+            if ($transaksi->jenis === 'Masuk') {
+              $barang->stock += $transaksi->qty;
+            } elseif ($transaksi->jenis === 'Keluar') {
+              // Check if its available or not
+              if ($barang->stock < $transaksi->qty) {
+                // Rollback status if its not
+                $transaksi->status = 'Pending';
+                $transaksi->save();
+
+                return response()->json([
+                  'success' => false,
+                  'message' => 'Stock barang tidak mencukupi untuk transaksi keluar'
+                ], 400);
+              }
+              $barang->stock -= $transaksi->qty;
+            }
+            $barang->save();
+          }
+        }
+
+        $statusText = $request->status === 'Approve' ? 'disetujui' : 'ditolak';
+
+        return response()->json([
+          'success' => true,
+          'message' => "Transaksi berhasil {$statusText}"
+        ]);
+
+      } catch (\Throwable $e) {
+        return response()->json([
+          'success' => false,
+          'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
       }
     }
 

@@ -31,10 +31,14 @@
      */
     public function build()
     {
-      return $this->subject($this->data['subject'])
+      $subject = $this->data['subject'] ?? ('Notifikasi Barang: ' . ($this->data['nama_barang'] ?? ''));
+      $body = $this->data['body'] ?? (($this->data['nama_barang'] ?? ' - ') . ' ' . ($this->data['jenis_barang'] ?? ' - '));
+
+
+      return $this->subject($subject)
         ->view('emails.notification')
         ->with([
-          'body' => $this->data['body'],
+          'body' => $body,
           'periode' => $this->data['periode'],
           'report_data' => $this->data['report_data'],
         ]);

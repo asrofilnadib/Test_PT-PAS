@@ -19,6 +19,7 @@ class TransaksiBarang extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->string('jenis');
             $table->string('qty');
+            $table->string('status');
             $table->date('tanggal_transaksi');
             $table->timestamps();
         });

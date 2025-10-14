@@ -28,6 +28,7 @@
             <th>QTY</th>
             <th>Created By</th>
             <th>Tanggal Transaksi</th>
+            <th>Status</th>
             <th>Action</th>
           </tr>
           </thead>
@@ -42,14 +43,54 @@
                 <td>{{ $d->user->name }}</td>
                 <td>{{ date('Y-m-d', strtotime($d->tanggal_transaksi)) }}</td>
                 <td>
-                  <div class="d-flex">
-                    <button class="btn btn-sm btn-warning me-2 edit" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{ $d->id }}">
-                      <i class="ti ti-edit"></i>
-                    </button>
-                    <a href="{{ route('transaksi_barang.destroy', $d->id) }}" class="btn btn-sm btn-danger hapus">
-                      <i class="ti ti-trash"></i>
-                    </a>
-                  </div>
+                  @if ($d->status === 'Pending' && Auth::user()->hasRole('Admin'))
+                    <!-- Dropdown untuk Pending Status -->
+                    <div class="dropdown">
+                      <button class="btn btn-warning btn-sm dropdown-toggle" type="button"
+                              id="statusDropdown{{ $d->id }}"
+                              data-bs-toggle="dropdown"
+                              aria-expanded="false">
+                        <i class="ti ti-clock"></i> Pending
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="statusDropdown{{ $d->id }}">
+                        <li>
+                          <a class="dropdown-item btn-approve" href="#" data-id="{{ $d->id }}">
+                            <i class="ti ti-check text-success"></i> Approve
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item btn-reject" href="#" data-id="{{ $d->id }}">
+                            <i class="ti ti-x text-danger"></i> Reject
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  @elseif ($d->status === 'Approve')
+                    <span class="badge bg-success">
+                      <i class="ti ti-check"></i> Approved
+                    </span>
+                  @elseif ($d->status === 'Reject')
+                    <span class="badge bg-danger">
+                      <i class="ti ti-x"></i> Rejected
+                    </span>
+                  @else
+                    <span class="badge bg-secondary">
+                      <i class="ti ti-clock"></i> Pending
+                    </span>
+                  @endif
+                </td>
+                <td>
+                  @if($d->status === 'Pending')
+                    <div class="d-flex">
+                      <button class="btn btn-sm btn-warning me-2 edit" data-bs-toggle="modal" data-bs-target="#editModal"
+                              data-id="{{ $d->id }}">
+                        <i class="ti ti-edit"></i>
+                      </button>
+                      <a href="{{ route('transaksi_barang.destroy', $d->id) }}" class="btn btn-sm btn-danger hapus">
+                        <i class="ti ti-trash"></i>
+                      </a>
+                    </div>
+                  @endif
                 </td>
               </tr>
             @endif
@@ -92,7 +133,8 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Jumlah (QTY)</label>
-              <input type="number" name="qty" class="form-control" placeholder="Masukkan jumlah" step="1" min="0" required>
+              <input type="number" name="qty" class="form-control" placeholder="Masukkan jumlah" step="1" min="0"
+                     required>
             </div>
             <div class="mb-3">
               <label class="form-label">Tanggal Transaksi</label>
@@ -172,7 +214,7 @@
           create: false,
           maxItems: 1,
           persist: true,
-          onInitialize: function() {
+          onInitialize: function () {
             this.$control.addClass('form-control');
           }
         });
@@ -196,6 +238,106 @@
           });
         });
 
+        // Status Update Handler - Approve
+        $(document).on('click', '.btn-approve', function (e) {
+          e.preventDefault();
+          const id = $(this).data('id');
+
+          Swal.fire({
+            title: 'Approve Transaksi?',
+            text: "Transaksi akan disetujui dan stok akan diupdate",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Approve!',
+            cancelButtonText: 'Batal'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              updateStatus(id, 'Approve');
+            }
+          });
+        });
+
+        // Status Update Handler - Reject
+        $(document).on('click', '.btn-reject', function (e) {
+          e.preventDefault();
+          const id = $(this).data('id');
+
+          Swal.fire({
+            title: 'Reject Transaksi?',
+            text: "Transaksi akan ditolak dan tidak akan mempengaruhi stok",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Reject!',
+            cancelButtonText: 'Batal'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              updateStatus(id, 'Reject');
+            }
+          });
+        });
+
+        // Function to update status via AJAX
+        function updateStatus(id, status) {
+          // Show loading
+          Swal.fire({
+            title: 'Memproses...',
+            text: 'Mohon tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+
+          $.ajax({
+            url: "{{ route('transaksi_barang.updateStatus') }}",
+            type: "POST",
+            data: {
+              _token: "{{ csrf_token() }}",
+              id: id,
+              status: status
+            },
+            success: function (response) {
+              if (response.success) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Berhasil!',
+                  text: response.message || `Transaksi berhasil di-${status.toLowerCase()}`,
+                  confirmButtonColor: '#7367F0',
+                }).then(() => {
+                  location.reload();
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Gagal!',
+                  text: response.message || 'Gagal memperbarui status',
+                  confirmButtonColor: '#7367F0',
+                });
+              }
+            },
+            error: function (xhr) {
+              console.error('Error:', xhr.responseText);
+
+              let errorMessage = 'Terjadi kesalahan pada server';
+
+              if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+              }
+
+              Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: errorMessage,
+                confirmButtonColor: '#7367F0',
+              });
+            }
+          });
+        }
+
         // edit handler
         $(document).on('click', '.edit', function (e) {
           e.preventDefault();
@@ -205,7 +347,7 @@
           const modal = $('#editModal');
           const form = $('#formEditBarang');
 
-          form.trigger('reset'); // Clear all form fields
+          form.trigger('reset');
 
           // Fetch data from API
           $.ajax({
@@ -213,7 +355,6 @@
             type: 'GET',
             dataType: 'json',
             beforeSend: function () {
-              // Reduce opacity to indicate loading
               modal.find('.modal-body').css('opacity', '0.6');
             },
             success: function (response) {
@@ -221,9 +362,9 @@
                 const data = response.data;
 
                 // Fill in form fields with API response
-                form.find('select[name="jenis"]').val(data.jenis).trigger('change'); // Select option for transaction type
-                form.find('input[name="qty"]').val(data.qty); // Set quantity
-                form.find('input[name="tanggal_transaksi"]').val(data.tanggal_transaksi); // Set transaction date
+                form.find('select[name="jenis"]').val(data.jenis).trigger('change');
+                form.find('input[name="qty"]').val(data.qty);
+                form.find('input[name="tanggal_transaksi"]').val(data.tanggal_transaksi);
 
                 const selectizeBarang = form.find('select[name="id_barang"]')[0].selectize;
                 selectizeBarang.setValue(data.id_barang);

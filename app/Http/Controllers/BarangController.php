@@ -65,14 +65,6 @@
         $data->expired_at = $request->expired_at;
         $data->save();
 
-        $dataNotify = [
-          'nama_barang' => $data->nama_barang,
-          'jenis_barang' => 'Ditambahkan',
-          'qty' => $data->stock,
-        ];
-
-        SendNotificationJob::dispatch($dataNotify);
-
         return redirect()->back()->with('success', "Data Barang Berhasil Ditambahkan !");
       } catch (\Throwable $ere) {
         return redirect()->back()->with('error', "Terjadi Kesalahan Saat Menambahkan Data.");
@@ -126,14 +118,6 @@
         $data->expired_at = $request->expired_at;
         $data->updated_at = Carbon::now('Asia/Jakarta');
         $data->save();
-
-        $dataNotify = [
-          'nama_barang' => $data->nama_barang,
-          'jenis_barang' => 'Diperbarui',
-          'qty' => $data->stock,
-        ];
-
-        SendNotificationJob::dispatch($dataNotify);
 
         return redirect()->back()->with('success', 'Data barang berhasil diperbarui!');
       } catch (\Throwable $e) {

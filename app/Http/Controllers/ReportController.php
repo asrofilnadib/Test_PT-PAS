@@ -99,17 +99,17 @@
         \Carbon\Carbon::parse($toDate)->format('d/m/Y');
 
       // Get manager info
-      $manager = User::role('Admin')->first();
-      $noManager = $manager->no_telp ?? null;
-      $emailManager = $manager->email ?? null;
+      $admin = User::role('Admin')->first();
+      $noAdmin = $admin->no_telp ?? null;
+      $emailAdmin = $admin->email ?? null;
 
       return view('app.report', compact(
         'barang',
         'data',
         'summary',
         'periode',
-        'noManager',
-        'emailManager'
+        'noAdmin',
+        'emailAdmin'
       ));
     }
 
@@ -125,9 +125,8 @@
       $reportData = json_decode(html_entity_decode($request->input('report_data')), true);
       $periode = $request->input('periode') ?? now()->format('d/m/Y');
 
-      // Manager email
-      $manager = User::role('Admin')->first();
-      if (!$manager || !$manager->email) {
+      $admin = User::role('Admin')->first();
+      if (!$admin || !$admin->email) {
         return redirect()->route('report')->with('error', 'Email manager tidak ditemukan');
       }
 
@@ -151,7 +150,7 @@
           'report_data' => $reportData
         ];
 
-        Mail::to($manager->email)->send((new MailManager($data))
+        Mail::to($admin->email)->send((new MailManager($data))
 //          ->attach($pdfPath)
 //          ->attach($excelPath)
         );
@@ -159,7 +158,7 @@
 //        File::delete([$pdfPath, $excelPath]);
 
         return redirect()->route('report')
-          ->with('success', 'Email berhasil dikirim ke ' . $manager->email);
+          ->with('success', 'Email berhasil dikirim ke ' . $admin->email);
       } catch (\Exception $e) {
         return redirect()->route('report')
           ->with('error', 'Gagal mengirim email: ' . $e->getMessage());
