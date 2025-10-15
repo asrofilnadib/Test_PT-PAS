@@ -1,65 +1,120 @@
-<<<<<<< HEAD
-# Test_PT-PAS
-=======
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# 📦 Warehouse Management System
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+Sistem ini merupakan **aplikasi manajemen gudang (Warehouse Management System)** berbasis web yang digunakan untuk memantau dan mengelola barang masuk dan keluar secara efisien.  
+Aplikasi ini membantu pengguna untuk melakukan pencatatan transaksi, memantau stok barang, dan menghasilkan laporan berbasis grafik dan tabel secara real-time.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Teknologi yang Digunakan
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Stack | Keterangan |
+|-------|-------------|
+| **Laravel 7** | Framework utama backend berbasis PHP |
+| **MySQL** | Database untuk penyimpanan data barang, transaksi, dan user |
+| **jQuery** | Library JavaScript untuk manipulasi DOM dan AJAX |
+| **DataTables** | Plugin untuk menampilkan tabel data dengan fitur pencarian, sort, dan pagination |
+| **SweetAlert** | Plugin untuk menampilkan notifikasi interaktif (alert & konfirmasi aksi) |
+| **Bootstrap** | Framework CSS untuk tampilan yang responsif dan modern |
+| **Highcharts** | Library grafik untuk menampilkan visualisasi data stok dan transaksi |
+| **Selectize.js** | Plugin untuk dropdown input yang lebih interaktif dan mudah digunakan |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🧩 Fitur Utama
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Login & Manajemen User** — autentikasi pengguna agar data lebih aman.
+- **Manajemen Barang** — tambah, ubah, dan hapus data barang.
+- **Transaksi Barang (Masuk & Keluar)** — mencatat pergerakan barang.
+- **Dashboard Interaktif** — menampilkan statistik barang, grafik stok, dan aktivitas terkini.
+- **Laporan & Export PDF** — laporan transaksi dapat diunduh berdasarkan periode.
+- **Notifikasi** — sistem memberi peringatan jika stok menipis atau transaksi gagal diproses.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🧠 Arsitektur Sistem
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### 📘 Entity Relationship Diagram (ERD)
 
-### Premium Partners
+![ERD](public/assets/img/diagram/erd.png)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+### 🔁 Flowchart Sistem
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+![Flowchart](public/assets/img/diagram/flowchart.png)
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🖼️ Tampilan Aplikasi
 
-## Security Vulnerabilities
+Berikut beberapa tampilan utama dari sistem:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 🔐 Halaman Login
+![Login](public/assets/img/screenshots/login.png)
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
->>>>>>> 6f09917 (initial commit message)
+### 📊 Dashboard
+![Dashboard](public/assets/img/screenshots/dashboard.png)
+
+---
+
+### 📦 Kelola Barang
+![Kelola Barang](public/assets/img/screenshots/kelola-barang.png)
+
+---
+
+### 🔄 Transaksi Barang
+![Transaksi Barang](public/assets/img/screenshots/transaksi-barang.png)
+
+---
+
+### 📑 Laporan
+![Laporan](public/assets/img/screenshots/report.png)
+
+---
+
+## 📄 Dokumen Tambahan
+
+Dokumen pendukung sistem dapat dilihat pada file berikut:
+
+📘 **[FSD - Warehouse Management System.docx](FSD%20-%20Warehouse%20Management%20System.docx)**
+
+File ini berisi **Functional Specification Document (FSD)** yang menjelaskan alur proses, kebutuhan fungsional, dan detail implementasi sistem.
+
+---
+
+## ⚙️ Cara Menjalankan Aplikasi
+
+1. Clone repository ini:
+   ```bash
+   git clone https://github.com/username/warehouse-management-system.git
+   ```
+2. Masuk ke direktori project:
+   ```bash
+    cd warehouse-management-system
+   ```
+3. Install dependency composer:
+    ```bash
+    composer install
+    ```
+4. Salin file .env.example menjadi .env, lalu sesuaikan konfigurasi database:
+    ```bash
+    cp .env.example .env
+    ```
+5. Generate key:
+    ```bash
+    php artisan key:generate
+    ```
+6. Jalankan migrasi database:
+    ```bash
+    php artisan migrate --seed
+    ```
+7. Jalankan server lokal:
+    ```bash
+    php artisan serve
+    ```
+8. Buka di browser:
+    ```
+    http://127.0.0.1:8000
+    ```
